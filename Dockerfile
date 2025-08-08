@@ -7,6 +7,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 COPY . .
+COPY data/ ./data/
 
 RUN mkdir -p temp logs && \
     chown -R node:node /app

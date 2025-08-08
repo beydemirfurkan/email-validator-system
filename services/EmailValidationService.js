@@ -1,4 +1,6 @@
 const config = require('../config');
+const fs = require('fs');
+const path = require('path');
 
 let validate;
 try {
@@ -18,18 +20,87 @@ class EmailValidationService {
             sender: config.validation.sender,
             ...config.validation.options
         };
+        this.invalidPatterns = this._initializeInvalidPatterns();
+    }
+
+    _initializeInvalidPatterns() {
+        const dataDir = path.join(__dirname, '..', 'data');
+        
+        try {
+            const placeholderDomains = this._loadTextFile(path.join(dataDir, 'placeholder-domains.txt'));
+            const spamKeywords = this._loadTextFile(path.join(dataDir, 'spam-keywords.txt'));
+
+            return {
+                placeholderDomains,
+                spamKeywords
+            };
+        } catch (error) {
+            console.error('Error loading invalid patterns from files:', error);
+            console.error('Using fallback patterns as a safety measure');
+            return {
+                placeholderDomains: [],
+                spamKeywords: []
+            };
+        }
+    }
+
+    _loadTextFile(filePath) {
+        if (!fs.existsSync(filePath)) {
+            console.warn(`Pattern file not found: ${filePath}`);
+            return [];
+        }
+        
+        const content = fs.readFileSync(filePath, 'utf8');
+        return content
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line && !line.startsWith('#'));
+    }
+
+
+    _isPlaceholderEmail(email) {
+        const emailLower = email.toLowerCase();
+        const [localPart, domain] = emailLower.split('@');
+
+        if (!localPart || !domain) return false;
+
+        const isDomainPlaceholder = this.invalidPatterns.placeholderDomains.includes(domain);
+        const containsSpamKeywords = this.invalidPatterns.spamKeywords.some(keyword =>
+            localPart.includes(keyword) || domain.includes(keyword)
+        );
+
+        return isDomainPlaceholder || containsSpamKeywords;
     }
 
     async validateSingle(email) {
         try {
+            const cleanEmail = email.trim().toLowerCase();
+
+            if (this._isPlaceholderEmail(cleanEmail)) {
+                return {
+                    success: true,
+                    email: cleanEmail,
+                    valid: false,
+                    reason: 'Placeholder or example email detected',
+                    details: {
+                        format: { valid: false },
+                        typo: { valid: false },
+                        disposable: { valid: false },
+                        mx: { valid: false },
+                        placeholder: { valid: false }
+                    },
+                    timestamp: new Date().toISOString()
+                };
+            }
+
             const validationResult = await validate({
-                email: email.trim().toLowerCase(),
+                email: cleanEmail,
                 ...this.validationOptions
             });
 
             return {
                 success: true,
-                email: email.trim().toLowerCase(),
+                email: cleanEmail,
                 valid: validationResult.valid,
                 reason: validationResult.reason || null,
                 details: this._extractValidationDetails(validationResult),
@@ -49,22 +120,22 @@ class EmailValidationService {
         const results = [];
         const totalEmails = emails.length;
         const logPrefix = requestId ? `[${requestId}]` : '';
-        
+
         console.log(`${logPrefix} Starting validation of ${totalEmails} emails in batches of ${this.batchSize}`);
-        
+
         for (let i = 0; i < emails.length; i += this.batchSize) {
             const batch = emails.slice(i, i + this.batchSize);
             const batchNumber = Math.floor(i / this.batchSize) + 1;
             const totalBatches = Math.ceil(emails.length / this.batchSize);
-            
+
             console.log(`${logPrefix} Processing batch ${batchNumber}/${totalBatches} (${batch.length} emails)`);
-            
+
             const batchResults = await this._processBatch(batch);
             results.push(...batchResults);
-            
+
             this._logProgress(i + this.batchSize, totalEmails, logPrefix);
         }
-        
+
         console.log(`${logPrefix} Validation completed for all ${totalEmails} emails`);
         return results;
     }
@@ -73,22 +144,22 @@ class EmailValidationService {
         const results = [];
         const totalRows = excelData.length;
         const logPrefix = requestId ? `[${requestId}]` : '';
-        
+
         console.log(`${logPrefix} Starting Excel validation of ${totalRows} rows in batches of ${this.batchSize}`);
-        
+
         for (let i = 0; i < excelData.length; i += this.batchSize) {
             const batch = excelData.slice(i, i + this.batchSize);
             const batchNumber = Math.floor(i / this.batchSize) + 1;
             const totalBatches = Math.ceil(excelData.length / this.batchSize);
-            
+
             console.log(`${logPrefix} Processing Excel batch ${batchNumber}/${totalBatches} (${batch.length} rows)`);
-            
+
             const batchResults = await this._processExcelBatch(batch);
             results.push(...batchResults);
-            
+
             this._logProgress(i + this.batchSize, totalRows, logPrefix, 'Excel');
         }
-        
+
         console.log(`${logPrefix} Excel validation completed for all ${totalRows} rows`);
         return results;
     }
@@ -98,14 +169,14 @@ class EmailValidationService {
         const valid = results.filter(r => r.success && r.valid).length;
         const invalid = results.filter(r => r.success && !r.valid).length;
         const errors = results.filter(r => !r.success).length;
-        
+
         const reasons = {};
         results.forEach(r => {
             if (r.success && r.reason) {
                 reasons[r.reason] = (reasons[r.reason] || 0) + 1;
             }
         });
-        
+
         return {
             total,
             valid,
@@ -119,7 +190,7 @@ class EmailValidationService {
     }
 
     removeDuplicates(emails) {
-        const uniqueEmails = [...new Set(emails.map(email => 
+        const uniqueEmails = [...new Set(emails.map(email =>
             typeof email === 'string' ? email.trim().toLowerCase() : email
         ))];
         return uniqueEmails;
@@ -136,13 +207,31 @@ class EmailValidationService {
             }
 
             try {
+                const cleanEmail = email.trim().toLowerCase();
+
+                if (this._isPlaceholderEmail(cleanEmail)) {
+                    return {
+                        email: cleanEmail,
+                        success: true,
+                        valid: false,
+                        reason: 'Placeholder or example email detected',
+                        details: {
+                            format: { valid: false },
+                            typo: { valid: false },
+                            disposable: { valid: false },
+                            mx: { valid: false },
+                            placeholder: { valid: false }
+                        }
+                    };
+                }
+
                 const validationResult = await validate({
-                    email: email.trim().toLowerCase(),
+                    email: cleanEmail,
                     ...this.validationOptions
                 });
 
                 return {
-                    email: email.trim().toLowerCase(),
+                    email: cleanEmail,
                     success: true,
                     valid: validationResult.valid,
                     reason: validationResult.reason || null,
@@ -156,7 +245,7 @@ class EmailValidationService {
                 };
             }
         });
-        
+
         return Promise.all(batchPromises);
     }
 
@@ -164,14 +253,30 @@ class EmailValidationService {
         const batchPromises = batch.map(async (row) => {
             const emailValue = this._findEmailInRow(row);
             const resultRow = { ...row };
-            
+
             if (!emailValue) {
                 return this._createFailedExcelResult(resultRow, 'No email found');
             }
-            
+
             try {
+                const cleanEmail = emailValue.toLowerCase();
+
+                if (this._isPlaceholderEmail(cleanEmail)) {
+                    const placeholderResult = {
+                        valid: false,
+                        reason: 'Placeholder or example email detected',
+                        validators: {
+                            regex: { valid: false },
+                            typo: { valid: false },
+                            disposable: { valid: false },
+                            mx: { valid: false }
+                        }
+                    };
+                    return this._createSuccessExcelResult(resultRow, placeholderResult);
+                }
+
                 const validationResult = await validate({
-                    email: emailValue.toLowerCase(),
+                    email: cleanEmail,
                     ...this.validationOptions
                 });
 
@@ -180,7 +285,7 @@ class EmailValidationService {
                 return this._createFailedExcelResult(resultRow, error.message);
             }
         });
-        
+
         return Promise.all(batchPromises);
     }
 

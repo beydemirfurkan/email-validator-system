@@ -1,7 +1,6 @@
 const express = require('express');
 const EmailValidationService = require('../services/EmailValidationService');
 const ResponseUtils = require('../utils/responseUtils');
-const { uploadMiddleware } = require('../middleware');
 
 const router = express.Router();
 const emailValidator = new EmailValidationService();
@@ -22,6 +21,7 @@ router.post('/validate-email', async (req, res) => {
             );
         }
 
+        
         const result = await emailValidator.validateSingle(email);
         res.json(result);
 

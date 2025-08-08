@@ -10,7 +10,14 @@
       "Bash(cmd /c:*)",
       "Bash(docker-compose up:*)",
       "Bash(docker-compose logs:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(docker-compose restart:*)",
+      "Bash(curl:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker-compose:*)",
+      "Bash(echo)",
+      "Bash(powershell:*)",
+      "Bash(npm test)"
     ],
     "deny": []
   }
