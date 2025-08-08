@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(npm start)",
+      "Bash(mkdir:*)",
+      "Bash(del utils.js)",
+      "Bash(rm:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd /c:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose logs:*)",
+      "Bash(touch:*)"
+    ],
+    "deny": []
+  }
+}
