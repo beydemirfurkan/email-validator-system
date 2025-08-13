@@ -1,5 +1,6 @@
 const csv = require('csv-parser');
 const fs = require('fs');
+const path = require('path');
 const XLSX = require('xlsx');
 const config = require('../config');
 const ResponseUtils = require('./responseUtils');
@@ -34,28 +35,43 @@ class FileUtils {
     }
 
     static generateCSV(results) {
-        const headers = ['email', 'valid', 'reason', 'format_valid', 'typo_check', 'disposable_check', 'mx_valid'];
+        const headers = ['email', 'valid', 'reason', 'format_valid', 'disposable_check', 'mx_valid', 'placeholder_check'];
         const csvRows = [headers.join(',')];
         
         results.forEach(result => {
+            const email = this._escapeCSVField(result.email || '');
+            const reason = this._escapeCSVField(result.reason || result.error || '');
+            
             if (result.success) {
                 const row = [
-                    result.email,
-                    result.valid,
-                    result.reason || '',
-                    result.details.format?.valid || false,
-                    result.details.typo?.valid || false,
-                    !result.details.disposable?.valid || false,
-                    result.details.mx?.valid || false
+                    email,
+                    result.valid || false,
+                    reason,
+                    result.details?.format?.valid || false,
+                    result.details?.disposable?.valid || false,
+                    result.details?.mx?.valid || false,
+                    result.details?.placeholder?.valid || false
                 ];
                 csvRows.push(row.join(','));
             } else {
-                const row = [result.email, false, result.error, false, false, false, false];
+                const row = [email, false, reason, false, false, false, false];
                 csvRows.push(row.join(','));
             }
         });
         
         return csvRows.join('\n');
+    }
+
+    static _escapeCSVField(field) {
+        if (typeof field !== 'string') {
+            field = String(field);
+        }
+        
+        if (field.includes(',') || field.includes('"') || field.includes('\n') || field.includes('\r')) {
+            return `"${field.replace(/"/g, '""')}"`;
+        }
+        
+        return field;
     }
 
     static generateExcel(results) {
@@ -92,6 +108,35 @@ class FileUtils {
             'X-Valid-Emails': validCount,
             'X-Invalid-Emails': invalidCount
         };
+    }
+
+    static saveResultsToFile(results, originalFilename, format = 'csv') {
+        const resultsDir = path.join(__dirname, '..', 'results');
+        
+        if (!fs.existsSync(resultsDir)) {
+            fs.mkdirSync(resultsDir, { recursive: true });
+        }
+        
+        const timestamp = ResponseUtils.generateTimestamp();
+        const baseName = originalFilename.replace(/\.[^/.]+$/, '');
+        const filename = `${baseName}-validation-results-${timestamp}.${format}`;
+        const filePath = path.join(resultsDir, filename);
+        
+        try {
+            if (format === 'csv') {
+                const csvContent = this.generateCSV(results);
+                fs.writeFileSync(filePath, '\uFEFF' + csvContent, 'utf8');
+            } else if (format === 'xlsx') {
+                const excelBuffer = this.generateExcel(results);
+                fs.writeFileSync(filePath, excelBuffer);
+            }
+            
+            console.log(`Results saved to: ${filePath}`);
+            return filePath;
+        } catch (error) {
+            console.error('Error saving results to file:', error);
+            throw error;
+        }
     }
 
     static cleanupFile(filePath) {

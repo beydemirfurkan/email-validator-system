@@ -17,7 +17,13 @@
       "Bash(docker-compose:*)",
       "Bash(echo)",
       "Bash(powershell:*)",
-      "Bash(npm test)"
+      "Bash(npm test)",
+      "Bash(del test-validation.js debug-validation.js)",
+      "Bash(mv:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)",
+      "Bash(del \"test-data-validation-results-2025-08-13T08-22-22-119Z.csv\")",
+      "Bash(del test-suspicious-patterns.js)"
     ],
     "deny": []
   }

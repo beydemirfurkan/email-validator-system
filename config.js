@@ -6,15 +6,7 @@ const config = {
   },
   
   validation: {
-    batchSize: 10,
-    sender: 'noreply@validator.com',
-    options: {
-      validateRegex: true,
-      validateMx: true,
-      validateTypo: true,
-      validateDisposable: true,
-      validateSMTP: false
-    }
+    batchSize: 10
   },
   
   upload: {

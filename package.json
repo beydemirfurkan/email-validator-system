@@ -25,9 +25,10 @@
   },
   "dependencies": {
     "csv-parser": "^3.2.0",
-    "deep-email-validator": "^0.1.21",
+    "disposable-email-domains": "^1.0.62",
     "express": "^5.1.0",
     "multer": "^2.0.2",
+    "punycode.js": "^2.3.1",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
