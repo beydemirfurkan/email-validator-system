@@ -3,9 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const app_config_1 = require("./config/app-config");
+const security_middleware_1 = require("./middleware/security.middleware");
 const email_validation_routes_1 = require("./routes/email-validation.routes");
 const auth_routes_1 = require("./routes/auth.routes");
 const file_upload_routes_1 = require("./routes/file-upload.routes");
@@ -18,9 +20,25 @@ const debug_routes_1 = require("./routes/debug.routes");
 const response_utils_1 = require("./utils/response.utils");
 const debug_utils_1 = require("./utils/debug.utils");
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)(app_config_1.appConfig.cors));
-app.use(express_1.default.json({ limit: app_config_1.appConfig.server.jsonLimit }));
-app.use(express_1.default.urlencoded({ extended: true, limit: app_config_1.appConfig.server.urlencodedLimit }));
+app.use((0, cors_1.default)({
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || false,
+    credentials: true,
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
+    exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset']
+}));
+app.use(security_middleware_1.SecurityMiddleware.helmet());
+app.use(security_middleware_1.SecurityMiddleware.additionalHeaders());
+app.use(express_1.default.json({
+    limit: app_config_1.appConfig.server.jsonLimit,
+    type: 'application/json'
+}));
+app.use(express_1.default.urlencoded({
+    extended: true,
+    limit: app_config_1.appConfig.server.urlencodedLimit,
+    type: 'application/x-www-form-urlencoded'
+}));
 app.use(debug_utils_1.DebugUtils.requestLogger());
 app.use(debug_utils_1.DebugUtils.errorTracker());
 app.use('/api', email_validation_routes_1.emailValidationRoutes);
@@ -36,7 +54,9 @@ app.get('/', (req, res) => {
     res.json(response_utils_1.ResponseUtils.success({
         name: 'Email Validator API',
         version: '2.0.0',
-        description: 'Professional email validation API with TypeScript, Drizzle ORM, and Zod validation',
+        description: 'Professional email validation API with Upstash Redis cache and Helmet.js security',
+        cache: 'upstash-redis',
+        security: 'helmet.js',
         endpoints: {
             health: 'GET /api/health',
             validateEmail: 'POST /api/validate-email',
@@ -76,11 +96,16 @@ app.use((req, res) => {
 });
 app.use((error, req, res, next) => {
     console.error('Unhandled error:', error);
-    res.status(500).json(response_utils_1.ResponseUtils.serverError('Internal server error', error));
+    const message = process.env.NODE_ENV === 'production'
+        ? 'Internal server error'
+        : error.message;
+    res.status(500).json(response_utils_1.ResponseUtils.serverError(message, error));
 });
 const PORT = app_config_1.appConfig.server.port;
 app.listen(PORT, () => {
     console.log(`🚀 Email Validator API v2.0.0 running on port ${PORT}`);
+    console.log(`🔒 Security: Helmet.js enabled`);
+    console.log(`📦 Cache: Upstash Redis integration`);
     console.log(`📍 Health check: http://localhost:${PORT}/api/health`);
     console.log(`📧 Single validation: POST http://localhost:${PORT}/api/validate-email`);
     console.log(`📦 Batch validation: POST http://localhost:${PORT}/api/validate-emails`);

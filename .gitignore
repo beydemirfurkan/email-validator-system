@@ -9,3 +9,4 @@ temp
 database.sqlite
 database.sqlite-shm
 database.sqlite-wal
+dist

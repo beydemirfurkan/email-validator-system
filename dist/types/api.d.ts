@@ -16,6 +16,8 @@ export interface ValidationResult {
     suggestion?: string;
     provider?: string;
     processingTime?: number;
+    fromCache?: boolean;
+    error?: any;
 }
 export interface ApiResponse<T = any> {
     success: boolean;

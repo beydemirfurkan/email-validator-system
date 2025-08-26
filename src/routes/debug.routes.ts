@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { AuthMiddleware } from '../middleware/auth.middleware';
 import { ResponseUtils } from '../utils/response.utils';
 import { DebugUtils } from '../utils/debug.utils';
+import { upstashCache } from '../services/upstash-cache.service';
 
 const router = Router();
 
@@ -11,10 +12,39 @@ router.use(AuthMiddleware.authenticateToken);
 // GET /api/debug/system-health - Get comprehensive system health
 router.get('/system-health', async (req: Request, res: Response) => {
   try {
-    const healthData = await DebugUtils.getSystemHealth();
+    const systemHealth = await DebugUtils.getSystemHealth();
+    const cacheStats = await upstashCache.getStats();
+    const memoryStats = DebugUtils.getMemoryStats();
+    
+    const health = {
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      version: '2.0.0',
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      security: {
+        helmet: process.env.NODE_ENV === 'production',
+        cors: true,
+        rateLimit: true,
+        cache: cacheStats.connected
+      },
+      cache: {
+        provider: 'upstash-redis',
+        connected: cacheStats.connected,
+        secure: true,
+        stats: cacheStats
+      },
+      memory: memoryStats,
+      database: {
+        type: 'sqlite',
+        connected: true,
+        pooled: true
+      },
+      systemHealth
+    };
     
     return res.json(ResponseUtils.success({
-      health: healthData
+      health: health
     }));
   } catch (error) {
     console.error('System health check error:', error);

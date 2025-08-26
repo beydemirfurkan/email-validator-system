@@ -27,7 +27,8 @@
       "Bash(npm run build:*)",
       "Bash(npx drizzle-kit:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(npm run test:load:*)"
+      "Bash(npm run test:load:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

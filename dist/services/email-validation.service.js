@@ -43,6 +43,7 @@ const dns_1 = require("dns");
 const punycode = __importStar(require("punycode.js"));
 const disposable_email_domains_1 = __importDefault(require("disposable-email-domains"));
 const mx_cache_service_1 = require("./mx-cache.service");
+const upstash_cache_service_1 = require("./upstash-cache.service");
 class EmailValidationService {
     batchSize;
     invalidPatterns;
@@ -361,7 +362,19 @@ class EmailValidationService {
         return hasRecords;
     }
     async validateSingle(email) {
+        const startTime = performance.now();
         try {
+            if (!this.isValidEmailFormat(email)) {
+                throw new Error('Invalid email format');
+            }
+            const cached = await upstash_cache_service_1.upstashCache.getEmailValidation(email);
+            if (cached) {
+                return {
+                    ...cached,
+                    fromCache: true,
+                    processingTime: performance.now() - startTime
+                };
+            }
             let cleanEmail = email.trim().toLowerCase();
             if (cleanEmail.length >= 250) {
                 return {
@@ -491,7 +504,7 @@ class EmailValidationService {
                 };
             }
             const hasMXRecord = await this.checkMXRecord(domain);
-            return {
+            const result = {
                 valid: hasMXRecord,
                 email: cleanEmail,
                 score: hasMXRecord ? 100 : 30,
@@ -504,15 +517,22 @@ class EmailValidationService {
                     typo: true,
                     suspicious: true,
                     spamKeywords: true
-                }
+                },
+                fromCache: false,
+                processingTime: performance.now() - startTime
             };
+            if (result.valid !== undefined) {
+                await upstash_cache_service_1.upstashCache.setEmailValidation(email, result, { ttl: 24 * 60 * 60 });
+            }
+            return result;
         }
         catch (error) {
+            console.error('Email validation error:', error);
             return {
                 valid: false,
                 email: email,
                 score: 0,
-                reason: [`Validation error: ${error.message}`],
+                reason: ['Validation failed'],
                 details: {
                     format: false,
                     mx: false,
@@ -521,7 +541,10 @@ class EmailValidationService {
                     typo: false,
                     suspicious: false,
                     spamKeywords: false
-                }
+                },
+                fromCache: false,
+                processingTime: performance.now() - startTime,
+                error: process.env.NODE_ENV === 'development' ? error : undefined
             };
         }
         finally {

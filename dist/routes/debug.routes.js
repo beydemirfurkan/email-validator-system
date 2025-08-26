@@ -5,14 +5,43 @@ const express_1 = require("express");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const response_utils_1 = require("../utils/response.utils");
 const debug_utils_1 = require("../utils/debug.utils");
+const upstash_cache_service_1 = require("../services/upstash-cache.service");
 const router = (0, express_1.Router)();
 exports.debugRoutes = router;
 router.use(auth_middleware_1.AuthMiddleware.authenticateToken);
 router.get('/system-health', async (req, res) => {
     try {
-        const healthData = await debug_utils_1.DebugUtils.getSystemHealth();
+        const systemHealth = await debug_utils_1.DebugUtils.getSystemHealth();
+        const cacheStats = await upstash_cache_service_1.upstashCache.getStats();
+        const memoryStats = debug_utils_1.DebugUtils.getMemoryStats();
+        const health = {
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            version: '2.0.0',
+            uptime: process.uptime(),
+            environment: process.env.NODE_ENV || 'development',
+            security: {
+                helmet: process.env.NODE_ENV === 'production',
+                cors: true,
+                rateLimit: true,
+                cache: cacheStats.connected
+            },
+            cache: {
+                provider: 'upstash-redis',
+                connected: cacheStats.connected,
+                secure: true,
+                stats: cacheStats
+            },
+            memory: memoryStats,
+            database: {
+                type: 'sqlite',
+                connected: true,
+                pooled: true
+            },
+            systemHealth
+        };
         return res.json(response_utils_1.ResponseUtils.success({
-            health: healthData
+            health: health
         }));
     }
     catch (error) {

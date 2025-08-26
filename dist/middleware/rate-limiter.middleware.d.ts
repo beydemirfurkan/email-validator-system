@@ -7,7 +7,10 @@ export declare class RateLimiterMiddleware {
         windowMs: number;
         message?: string;
         keyGenerator?: (req: Request) => string;
-    }): (req: Request, res: Response, next: NextFunction) => void;
+        skipSuccessfulRequests?: boolean;
+    }): (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    private static fallbackRateLimit;
+    private static getSecureKey;
     private static getDefaultKey;
     static apiKeyLimiter(): (req: Request, res: Response, next: NextFunction) => void;
     static getStats(key: string): {

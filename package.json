@@ -37,13 +37,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@upstash/redis": "^1.35.3",
     "bcryptjs": "^3.0.2",
     "better-sqlite3": "^11.6.0",
     "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
     "disposable-email-domains": "^1.0.62",
+    "dotenv": "^17.2.1",
     "drizzle-orm": "^0.38.2",
     "express": "^5.1.0",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "punycode.js": "^2.3.1",
