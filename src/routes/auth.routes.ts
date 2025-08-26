@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { db } from '../database/connection';
-import { users, NewUser } from '../database/schema';
+import { users, NewUser, plans, userSubscriptions, usageQuotas, NewUserSubscription, NewUsageQuota } from '../database/schema';
 import { AuthMiddleware } from '../middleware/auth.middleware';
 import { RateLimiterMiddleware } from '../middleware/rate-limiter.middleware';
 import { ResponseUtils } from '../utils/response.utils';
@@ -58,6 +58,62 @@ router.post('/register', registerLimiter, async (req: Request, res: Response) =>
     });
 
     const user = createdUsers[0]!;
+
+    // Auto-subscribe user to Free plan
+    try {
+      // Get Free plan (ID 1)
+      const freePlanRecords = await db.select()
+        .from(plans)
+        .where(and(
+          eq(plans.name, 'Free'),
+          eq(plans.isActive, true)
+        ))
+        .limit(1);
+
+      if (freePlanRecords.length > 0) {
+        const freePlan = freePlanRecords[0]!;
+
+        // Calculate period dates
+        const now = new Date();
+        const currentPeriodStart = now;
+        const currentPeriodEnd = new Date(now);
+        currentPeriodEnd.setMonth(now.getMonth() + 1);
+
+        // Create free subscription
+        const newSubscription: NewUserSubscription = {
+          userId: user.id,
+          planId: freePlan.id,
+          status: 'active',
+          currentPeriodStart,
+          currentPeriodEnd,
+          cancelAtPeriodEnd: false,
+          stripeSubscriptionId: null,
+          stripeCustomerId: null
+        };
+
+        await db.insert(userSubscriptions).values(newSubscription);
+
+        // Create usage quota
+        const newUsageQuota: NewUsageQuota = {
+          userId: user.id,
+          planId: freePlan.id,
+          currentPeriodStart,
+          currentPeriodEnd,
+          validationsUsed: 0,
+          validationsLimit: freePlan.validationsPerMonth,
+          apiCallsUsed: 0,
+          apiCallsLimit: freePlan.apiAccess ? -1 : 0,
+          lastResetAt: now
+        };
+
+        await db.insert(usageQuotas).values(newUsageQuota);
+
+        console.log(`✅ Auto-subscribed user ${user.id} to Free plan`);
+      }
+    } catch (error) {
+      console.error('Failed to auto-subscribe to Free plan:', error);
+      // Don't fail registration if subscription fails
+    }
 
     // Generate JWT token
     const token = AuthMiddleware.generateToken(user.id);
