@@ -31,6 +31,6 @@ export const appConfig = {
   },
 
   database: {
-    path: './database.sqlite'
+    url: process.env.DATABASE_URL || 'postgresql://localhost:5432/email_validator'
   }
 } as const;

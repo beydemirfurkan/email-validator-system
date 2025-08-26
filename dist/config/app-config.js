@@ -29,7 +29,7 @@ exports.appConfig = {
         methods: 'GET, POST, OPTIONS'
     },
     database: {
-        path: './database.sqlite'
+        url: process.env.DATABASE_URL || 'postgresql://localhost:5432/email_validator'
     }
 };
 //# sourceMappingURL=app-config.js.map

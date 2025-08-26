@@ -34,7 +34,17 @@ declare class DebugUtils {
     };
     static getDatabaseStats(): Promise<{
         healthy: boolean;
-        stats: any;
+        stats: {
+            totalConnections: number;
+            availableConnections: number;
+            pendingRequests: number;
+            activeConnections: number;
+            created: number;
+            acquired: number;
+            released: number;
+            destroyed: number;
+            timeouts: number;
+        };
         issues: string[];
     } | {
         healthy: boolean;
@@ -88,7 +98,17 @@ declare class DebugUtils {
             };
             database: {
                 healthy: boolean;
-                stats: any;
+                stats: {
+                    totalConnections: number;
+                    availableConnections: number;
+                    pendingRequests: number;
+                    activeConnections: number;
+                    created: number;
+                    acquired: number;
+                    released: number;
+                    destroyed: number;
+                    timeouts: number;
+                };
                 issues: string[];
             } | {
                 healthy: boolean;

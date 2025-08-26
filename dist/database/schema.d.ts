@@ -1,12 +1,12 @@
-export declare const users: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const users: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "users";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "users";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -19,11 +19,11 @@ export declare const users: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        email: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        email: import("drizzle-orm/pg-core").PgColumn<{
             name: "email";
             tableName: "users";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -36,13 +36,13 @@ export declare const users: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        password: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        password: import("drizzle-orm/pg-core").PgColumn<{
             name: "password";
             tableName: "users";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -55,13 +55,13 @@ export declare const users: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        name: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        name: import("drizzle-orm/pg-core").PgColumn<{
             name: "name";
             tableName: "users";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -74,15 +74,15 @@ export declare const users: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        isActive: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        isActive: import("drizzle-orm/pg-core").PgColumn<{
             name: "is_active";
             tableName: "users";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -93,56 +93,52 @@ export declare const users: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "users";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "users";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
-export declare const apiKeys: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const apiKeys: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "api_keys";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "api_keys";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -155,13 +151,13 @@ export declare const apiKeys: import("drizzle-orm/sqlite-core").SQLiteTableWithC
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        userId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        userId: import("drizzle-orm/pg-core").PgColumn<{
             name: "user_id";
             tableName: "api_keys";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -172,11 +168,11 @@ export declare const apiKeys: import("drizzle-orm/sqlite-core").SQLiteTableWithC
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        keyName: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        keyName: import("drizzle-orm/pg-core").PgColumn<{
             name: "key_name";
             tableName: "api_keys";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -189,13 +185,13 @@ export declare const apiKeys: import("drizzle-orm/sqlite-core").SQLiteTableWithC
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        apiKey: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        apiKey: import("drizzle-orm/pg-core").PgColumn<{
             name: "api_key";
             tableName: "api_keys";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -208,53 +204,49 @@ export declare const apiKeys: import("drizzle-orm/sqlite-core").SQLiteTableWithC
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        lastUsedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        lastUsedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "last_used_at";
             tableName: "api_keys";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        expiresAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        expiresAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "expires_at";
             tableName: "api_keys";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        isActive: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        isActive: import("drizzle-orm/pg-core").PgColumn<{
             name: "is_active";
             tableName: "api_keys";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -265,13 +257,13 @@ export declare const apiKeys: import("drizzle-orm/sqlite-core").SQLiteTableWithC
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        rateLimit: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        rateLimit: import("drizzle-orm/pg-core").PgColumn<{
             name: "rate_limit";
             tableName: "api_keys";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -282,56 +274,52 @@ export declare const apiKeys: import("drizzle-orm/sqlite-core").SQLiteTableWithC
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "api_keys";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "api_keys";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
-export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const plans: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "plans";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "plans";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -344,11 +332,11 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        name: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        name: import("drizzle-orm/pg-core").PgColumn<{
             name: "name";
             tableName: "plans";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -361,13 +349,13 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        description: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        description: import("drizzle-orm/pg-core").PgColumn<{
             name: "description";
             tableName: "plans";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgText";
             data: string;
             driverParam: string;
             notNull: false;
@@ -379,16 +367,14 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        price: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        price: import("drizzle-orm/pg-core").PgColumn<{
             name: "price";
             tableName: "plans";
             dataType: "number";
-            columnType: "SQLiteReal";
+            columnType: "PgReal";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -399,32 +385,32 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        billingCycle: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        billingCycle: import("drizzle-orm/pg-core").PgColumn<{
             name: "billing_cycle";
             tableName: "plans";
             dataType: "string";
-            columnType: "SQLiteText";
-            data: "monthly" | "yearly";
+            columnType: "PgVarchar";
+            data: string;
             driverParam: string;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: ["monthly", "yearly"];
+            enumValues: [string, ...string[]];
             baseColumn: never;
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 20;
         }>;
-        validationsPerMonth: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        validationsPerMonth: import("drizzle-orm/pg-core").PgColumn<{
             name: "validations_per_month";
             tableName: "plans";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -435,13 +421,13 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        maxApiKeys: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        maxApiKeys: import("drizzle-orm/pg-core").PgColumn<{
             name: "max_api_keys";
             tableName: "plans";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -452,13 +438,13 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        maxContactLists: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        maxContactLists: import("drizzle-orm/pg-core").PgColumn<{
             name: "max_contact_lists";
             tableName: "plans";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -469,13 +455,13 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        bulkValidation: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        bulkValidation: import("drizzle-orm/pg-core").PgColumn<{
             name: "bulk_validation";
             tableName: "plans";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -486,13 +472,13 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        apiAccess: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        apiAccess: import("drizzle-orm/pg-core").PgColumn<{
             name: "api_access";
             tableName: "plans";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -503,13 +489,13 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        prioritySupport: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        prioritySupport: import("drizzle-orm/pg-core").PgColumn<{
             name: "priority_support";
             tableName: "plans";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -520,13 +506,13 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        isActive: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        isActive: import("drizzle-orm/pg-core").PgColumn<{
             name: "is_active";
             tableName: "plans";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -537,56 +523,52 @@ export declare const plans: import("drizzle-orm/sqlite-core").SQLiteTableWithCol
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "plans";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "plans";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
-export declare const planFeatures: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const planFeatures: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "plan_features";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "plan_features";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -599,13 +581,13 @@ export declare const planFeatures: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        planId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        planId: import("drizzle-orm/pg-core").PgColumn<{
             name: "plan_id";
             tableName: "plan_features";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -616,11 +598,11 @@ export declare const planFeatures: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        featureName: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        featureName: import("drizzle-orm/pg-core").PgColumn<{
             name: "feature_name";
             tableName: "plan_features";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -633,13 +615,13 @@ export declare const planFeatures: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        featureValue: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        featureValue: import("drizzle-orm/pg-core").PgColumn<{
             name: "feature_value";
             tableName: "plan_features";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: false;
@@ -652,15 +634,15 @@ export declare const planFeatures: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        isEnabled: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        isEnabled: import("drizzle-orm/pg-core").PgColumn<{
             name: "is_enabled";
             tableName: "plan_features";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -671,56 +653,52 @@ export declare const planFeatures: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "plan_features";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "plan_features";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
-export declare const userSubscriptions: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const userSubscriptions: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "user_subscriptions";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "user_subscriptions";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -733,13 +711,13 @@ export declare const userSubscriptions: import("drizzle-orm/sqlite-core").SQLite
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        userId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        userId: import("drizzle-orm/pg-core").PgColumn<{
             name: "user_id";
             tableName: "user_subscriptions";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -750,13 +728,13 @@ export declare const userSubscriptions: import("drizzle-orm/sqlite-core").SQLite
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        planId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        planId: import("drizzle-orm/pg-core").PgColumn<{
             name: "plan_id";
             tableName: "user_subscriptions";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -767,70 +745,66 @@ export declare const userSubscriptions: import("drizzle-orm/sqlite-core").SQLite
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        status: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        status: import("drizzle-orm/pg-core").PgColumn<{
             name: "status";
             tableName: "user_subscriptions";
             dataType: "string";
-            columnType: "SQLiteText";
-            data: "active" | "cancelled" | "expired" | "pending";
+            columnType: "PgVarchar";
+            data: string;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: ["active", "cancelled", "expired", "pending"];
+            enumValues: [string, ...string[]];
             baseColumn: never;
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 20;
         }>;
-        currentPeriodStart: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        currentPeriodStart: import("drizzle-orm/pg-core").PgColumn<{
             name: "current_period_start";
             tableName: "user_subscriptions";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        currentPeriodEnd: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        currentPeriodEnd: import("drizzle-orm/pg-core").PgColumn<{
             name: "current_period_end";
             tableName: "user_subscriptions";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        cancelAtPeriodEnd: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        cancelAtPeriodEnd: import("drizzle-orm/pg-core").PgColumn<{
             name: "cancel_at_period_end";
             tableName: "user_subscriptions";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -841,11 +815,11 @@ export declare const userSubscriptions: import("drizzle-orm/sqlite-core").SQLite
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        stripeSubscriptionId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        stripeSubscriptionId: import("drizzle-orm/pg-core").PgColumn<{
             name: "stripe_subscription_id";
             tableName: "user_subscriptions";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: false;
@@ -858,13 +832,13 @@ export declare const userSubscriptions: import("drizzle-orm/sqlite-core").SQLite
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        stripeCustomerId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        stripeCustomerId: import("drizzle-orm/pg-core").PgColumn<{
             name: "stripe_customer_id";
             tableName: "user_subscriptions";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: false;
@@ -877,58 +851,54 @@ export declare const userSubscriptions: import("drizzle-orm/sqlite-core").SQLite
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "user_subscriptions";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "user_subscriptions";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
-export declare const usageQuotas: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const usageQuotas: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "usage_quotas";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "usage_quotas";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -941,13 +911,13 @@ export declare const usageQuotas: import("drizzle-orm/sqlite-core").SQLiteTableW
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        userId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        userId: import("drizzle-orm/pg-core").PgColumn<{
             name: "user_id";
             tableName: "usage_quotas";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -958,13 +928,13 @@ export declare const usageQuotas: import("drizzle-orm/sqlite-core").SQLiteTableW
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        planId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        planId: import("drizzle-orm/pg-core").PgColumn<{
             name: "plan_id";
             tableName: "usage_quotas";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -975,51 +945,47 @@ export declare const usageQuotas: import("drizzle-orm/sqlite-core").SQLiteTableW
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        currentPeriodStart: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        currentPeriodStart: import("drizzle-orm/pg-core").PgColumn<{
             name: "current_period_start";
             tableName: "usage_quotas";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        currentPeriodEnd: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        currentPeriodEnd: import("drizzle-orm/pg-core").PgColumn<{
             name: "current_period_end";
             tableName: "usage_quotas";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        validationsUsed: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        validationsUsed: import("drizzle-orm/pg-core").PgColumn<{
             name: "validations_used";
             tableName: "usage_quotas";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1030,13 +996,13 @@ export declare const usageQuotas: import("drizzle-orm/sqlite-core").SQLiteTableW
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        validationsLimit: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        validationsLimit: import("drizzle-orm/pg-core").PgColumn<{
             name: "validations_limit";
             tableName: "usage_quotas";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1047,13 +1013,13 @@ export declare const usageQuotas: import("drizzle-orm/sqlite-core").SQLiteTableW
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        apiCallsUsed: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        apiCallsUsed: import("drizzle-orm/pg-core").PgColumn<{
             name: "api_calls_used";
             tableName: "usage_quotas";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1064,13 +1030,13 @@ export declare const usageQuotas: import("drizzle-orm/sqlite-core").SQLiteTableW
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        apiCallsLimit: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        apiCallsLimit: import("drizzle-orm/pg-core").PgColumn<{
             name: "api_calls_limit";
             tableName: "usage_quotas";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1081,75 +1047,69 @@ export declare const usageQuotas: import("drizzle-orm/sqlite-core").SQLiteTableW
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        lastResetAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        lastResetAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "last_reset_at";
             tableName: "usage_quotas";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "usage_quotas";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "usage_quotas";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
-export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const contactLists: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "contact_lists";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "contact_lists";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -1162,13 +1122,13 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        userId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        userId: import("drizzle-orm/pg-core").PgColumn<{
             name: "user_id";
             tableName: "contact_lists";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1179,11 +1139,11 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        name: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        name: import("drizzle-orm/pg-core").PgColumn<{
             name: "name";
             tableName: "contact_lists";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -1196,13 +1156,13 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        description: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        description: import("drizzle-orm/pg-core").PgColumn<{
             name: "description";
             tableName: "contact_lists";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgText";
             data: string;
             driverParam: string;
             notNull: false;
@@ -1214,16 +1174,14 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        totalContacts: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        totalContacts: import("drizzle-orm/pg-core").PgColumn<{
             name: "total_contacts";
             tableName: "contact_lists";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1234,13 +1192,13 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        validContacts: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        validContacts: import("drizzle-orm/pg-core").PgColumn<{
             name: "valid_contacts";
             tableName: "contact_lists";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1251,13 +1209,13 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        invalidContacts: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        invalidContacts: import("drizzle-orm/pg-core").PgColumn<{
             name: "invalid_contacts";
             tableName: "contact_lists";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1268,13 +1226,13 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        riskyContacts: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        riskyContacts: import("drizzle-orm/pg-core").PgColumn<{
             name: "risky_contacts";
             tableName: "contact_lists";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1285,13 +1243,13 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        unknownContacts: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        unknownContacts: import("drizzle-orm/pg-core").PgColumn<{
             name: "unknown_contacts";
             tableName: "contact_lists";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1302,31 +1260,12 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        lastValidatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        lastValidatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "last_validated_at";
             tableName: "contact_lists";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
-            driverParam: string;
-            notNull: false;
-            hasDefault: false;
-            isPrimaryKey: false;
-            isAutoincrement: false;
-            hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
-            baseColumn: never;
-            identity: undefined;
-            generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        tags: import("drizzle-orm/sqlite-core").SQLiteColumn<{
-            name: "tags";
-            tableName: "contact_lists";
-            dataType: "json";
-            columnType: "SQLiteTextJson";
-            data: unknown;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
@@ -1338,13 +1277,30 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        isActive: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        tags: import("drizzle-orm/pg-core").PgColumn<{
+            name: "tags";
+            tableName: "contact_lists";
+            dataType: "json";
+            columnType: "PgJson";
+            data: unknown;
+            driverParam: unknown;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        isActive: import("drizzle-orm/pg-core").PgColumn<{
             name: "is_active";
             tableName: "contact_lists";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1355,56 +1311,52 @@ export declare const contactLists: import("drizzle-orm/sqlite-core").SQLiteTable
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "contact_lists";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "contact_lists";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
-export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const contacts: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "contacts";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "contacts";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -1417,13 +1369,13 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        contactListId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        contactListId: import("drizzle-orm/pg-core").PgColumn<{
             name: "contact_list_id";
             tableName: "contacts";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1434,11 +1386,11 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        email: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        email: import("drizzle-orm/pg-core").PgColumn<{
             name: "email";
             tableName: "contacts";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -1451,13 +1403,13 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        firstName: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        firstName: import("drizzle-orm/pg-core").PgColumn<{
             name: "first_name";
             tableName: "contacts";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: false;
@@ -1470,13 +1422,13 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        lastName: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        lastName: import("drizzle-orm/pg-core").PgColumn<{
             name: "last_name";
             tableName: "contacts";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: false;
@@ -1489,13 +1441,13 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        phone: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        phone: import("drizzle-orm/pg-core").PgColumn<{
             name: "phone";
             tableName: "contacts";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: false;
@@ -1508,13 +1460,13 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 50;
         }>;
-        company: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        company: import("drizzle-orm/pg-core").PgColumn<{
             name: "company";
             tableName: "contacts";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: false;
@@ -1527,15 +1479,15 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        customFields: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        customFields: import("drizzle-orm/pg-core").PgColumn<{
             name: "custom_fields";
             tableName: "contacts";
             dataType: "json";
-            columnType: "SQLiteTextJson";
+            columnType: "PgJson";
             data: unknown;
-            driverParam: string;
+            driverParam: unknown;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1546,32 +1498,32 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        validationStatus: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        validationStatus: import("drizzle-orm/pg-core").PgColumn<{
             name: "validation_status";
             tableName: "contacts";
             dataType: "string";
-            columnType: "SQLiteText";
-            data: "valid" | "pending" | "validating" | "invalid" | "risky" | "unknown";
+            columnType: "PgVarchar";
+            data: string;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: ["pending", "validating", "valid", "invalid", "risky", "unknown"];
+            enumValues: [string, ...string[]];
             baseColumn: never;
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 20;
         }>;
-        validationResult: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        validationResult: import("drizzle-orm/pg-core").PgColumn<{
             name: "validation_result";
             tableName: "contacts";
             dataType: "json";
-            columnType: "SQLiteTextJson";
+            columnType: "PgJson";
             data: unknown;
-            driverParam: string;
+            driverParam: unknown;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1582,13 +1534,13 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        validationScore: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        validationScore: import("drizzle-orm/pg-core").PgColumn<{
             name: "validation_score";
             tableName: "contacts";
             dataType: "number";
-            columnType: "SQLiteReal";
+            columnType: "PgReal";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1599,32 +1551,30 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        lastValidatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        lastValidatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "last_validated_at";
             tableName: "contacts";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        tags: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        tags: import("drizzle-orm/pg-core").PgColumn<{
             name: "tags";
             tableName: "contacts";
             dataType: "json";
-            columnType: "SQLiteTextJson";
+            columnType: "PgJson";
             data: unknown;
-            driverParam: string;
+            driverParam: unknown;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1635,11 +1585,11 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        notes: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        notes: import("drizzle-orm/pg-core").PgColumn<{
             name: "notes";
             tableName: "contacts";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgText";
             data: string;
             driverParam: string;
             notNull: false;
@@ -1651,16 +1601,14 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        isSubscribed: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        isSubscribed: import("drizzle-orm/pg-core").PgColumn<{
             name: "is_subscribed";
             tableName: "contacts";
             dataType: "boolean";
-            columnType: "SQLiteBoolean";
+            columnType: "PgBoolean";
             data: boolean;
-            driverParam: number;
+            driverParam: boolean;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
@@ -1671,94 +1619,86 @@ export declare const contacts: import("drizzle-orm/sqlite-core").SQLiteTableWith
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        bouncedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        bouncedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "bounced_at";
             tableName: "contacts";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        unsubscribedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        unsubscribedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "unsubscribed_at";
             tableName: "contacts";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "contacts";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "contacts";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
-export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTableWithColumns<{
+export declare const validationLogs: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "validation_logs";
     schema: undefined;
     columns: {
-        id: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        id: import("drizzle-orm/pg-core").PgColumn<{
             name: "id";
             tableName: "validation_logs";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgSerial";
             data: number;
             driverParam: number;
             notNull: true;
@@ -1771,13 +1711,13 @@ export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTab
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        userId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        userId: import("drizzle-orm/pg-core").PgColumn<{
             name: "user_id";
             tableName: "validation_logs";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1788,13 +1728,13 @@ export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTab
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        apiKeyId: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        apiKeyId: import("drizzle-orm/pg-core").PgColumn<{
             name: "api_key_id";
             tableName: "validation_logs";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1805,11 +1745,11 @@ export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTab
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        emailValidated: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        emailValidated: import("drizzle-orm/pg-core").PgColumn<{
             name: "email_validated";
             tableName: "validation_logs";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: true;
@@ -1822,15 +1762,15 @@ export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTab
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 255;
         }>;
-        validationResult: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        validationResult: import("drizzle-orm/pg-core").PgColumn<{
             name: "validation_result";
             tableName: "validation_logs";
             dataType: "json";
-            columnType: "SQLiteTextJson";
+            columnType: "PgJson";
             data: unknown;
-            driverParam: string;
+            driverParam: unknown;
             notNull: true;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1841,13 +1781,13 @@ export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTab
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        processingTimeMs: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        processingTimeMs: import("drizzle-orm/pg-core").PgColumn<{
             name: "processing_time_ms";
             tableName: "validation_logs";
             dataType: "number";
-            columnType: "SQLiteInteger";
+            columnType: "PgInteger";
             data: number;
-            driverParam: number;
+            driverParam: string | number;
             notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
@@ -1858,11 +1798,11 @@ export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTab
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
-        ipAddress: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        ipAddress: import("drizzle-orm/pg-core").PgColumn<{
             name: "ip_address";
             tableName: "validation_logs";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgVarchar";
             data: string;
             driverParam: string;
             notNull: false;
@@ -1875,13 +1815,13 @@ export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTab
             identity: undefined;
             generated: undefined;
         }, {}, {
-            length: number | undefined;
+            length: 45;
         }>;
-        userAgent: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        userAgent: import("drizzle-orm/pg-core").PgColumn<{
             name: "user_agent";
             tableName: "validation_logs";
             dataType: "string";
-            columnType: "SQLiteText";
+            columnType: "PgText";
             data: string;
             driverParam: string;
             notNull: false;
@@ -1893,49 +1833,43 @@ export declare const validationLogs: import("drizzle-orm/sqlite-core").SQLiteTab
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        createdAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "validation_logs";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
-        updatedAt: import("drizzle-orm/sqlite-core").SQLiteColumn<{
+        }, {}, {}>;
+        updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "validation_logs";
-            dataType: "string";
-            columnType: "SQLiteText";
-            data: string;
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
             driverParam: string;
             notNull: false;
             hasDefault: true;
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: [string, ...string[]];
+            enumValues: undefined;
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: number | undefined;
-        }>;
+        }, {}, {}>;
     };
-    dialect: "sqlite";
+    dialect: "pg";
 }>;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

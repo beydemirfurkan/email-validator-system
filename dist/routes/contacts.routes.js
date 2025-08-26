@@ -43,7 +43,7 @@ async function updateContactListStatistics(listId) {
         invalidContacts: invalidCount[0]?.count || 0,
         riskyContacts: riskyCount[0]?.count || 0,
         unknownContacts: unknownCount[0]?.count || 0,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date()
     })
         .where((0, drizzle_orm_1.eq)(schema_1.contactLists.id, listId));
 }
@@ -218,7 +218,7 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json(response_utils_1.ResponseUtils.error('Contact not found', 404));
         }
         const updates = {
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date()
         };
         if (firstName !== undefined) {
             updates.firstName = typeof firstName === 'string' ? firstName.trim() || null : null;
@@ -255,7 +255,7 @@ router.put('/:id', async (req, res) => {
             if (typeof isSubscribed === 'boolean') {
                 updates.isSubscribed = isSubscribed;
                 if (!isSubscribed) {
-                    updates.unsubscribedAt = new Date().toISOString();
+                    updates.unsubscribedAt = new Date();
                 }
             }
         }
@@ -401,8 +401,8 @@ router.post('/:id/validate', async (req, res) => {
             validationStatus,
             validationResult: JSON.stringify(validationResult),
             validationScore: validationResult.score,
-            lastValidatedAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            lastValidatedAt: new Date(),
+            updatedAt: new Date()
         })
             .where((0, drizzle_orm_1.eq)(schema_1.contacts.id, contactId))
             .returning();

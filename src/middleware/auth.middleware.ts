@@ -119,6 +119,12 @@ export class AuthMiddleware {
         return;
       }
 
+      // Check if API key is expired
+      if (matchedApiKey.expiresAt && matchedApiKey.expiresAt < new Date()) {
+        res.status(401).json(ResponseUtils.error('API key has expired', 401));
+        return;
+      }
+
       // Get user associated with API key
       const user = await db.select().from(users).where(eq(users.id, matchedApiKey.userId)).limit(1);
 
@@ -129,7 +135,7 @@ export class AuthMiddleware {
 
       // Update last used timestamp
       await db.update(apiKeys)
-        .set({ lastUsedAt: new Date().toISOString() } as any)
+        .set({ lastUsedAt: new Date() } as any)
         .where(eq(apiKeys.id, matchedApiKey.id));
 
       req.user = {

@@ -37,11 +37,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.db = void 0;
-const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
-const better_sqlite3_2 = require("drizzle-orm/better-sqlite3");
+const postgres_js_1 = require("drizzle-orm/postgres-js");
+const postgres_1 = __importDefault(require("postgres"));
 const schema = __importStar(require("./schema"));
-const sqlite = new better_sqlite3_1.default('database.sqlite');
-sqlite.pragma('journal_mode = WAL');
-exports.db = (0, better_sqlite3_2.drizzle)(sqlite, { schema });
+const connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/email_validator';
+const client = (0, postgres_1.default)(connectionString, {
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+    max: 20,
+    idle_timeout: 20,
+    connect_timeout: 10,
+});
+exports.db = (0, postgres_js_1.drizzle)(client, { schema });
 exports.default = exports.db;
 //# sourceMappingURL=connection.js.map

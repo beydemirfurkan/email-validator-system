@@ -34,7 +34,7 @@ router.get('/system-health', async (req, res) => {
             },
             memory: memoryStats,
             database: {
-                type: 'sqlite',
+                type: 'postgresql',
                 connected: true,
                 pooled: true
             },

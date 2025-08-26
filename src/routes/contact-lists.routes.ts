@@ -233,7 +233,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     // Build update object
     const updates: Partial<NewContactList> = {
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     };
 
     if (name !== undefined) {
@@ -328,7 +328,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     const deletedLists = await db.update(contactLists)
       .set({ 
         isActive: false,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date()
       })
       .where(and(
         eq(contactLists.id, listId),
@@ -347,7 +347,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
     // Also soft delete all contacts in this list
     await db.update(contacts)
-      .set({ updatedAt: new Date().toISOString() })
+      .set({ updatedAt: new Date() })
       .where(eq(contacts.contactListId, listId));
 
     const deletedList = deletedLists[0];

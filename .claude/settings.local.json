@@ -28,7 +28,10 @@
       "Bash(npx drizzle-kit:*)",
       "Bash(npm run typecheck:*)",
       "Bash(npm run test:load:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run:*)",
+      "Bash(del database.sqlite database.sqlite-shm database.sqlite-wal database-indexes.sql)"
     ],
     "deny": []
   }

@@ -85,13 +85,17 @@ class AuthMiddleware {
                 res.status(401).json(response_utils_1.ResponseUtils.error('Invalid API key', 401));
                 return;
             }
+            if (matchedApiKey.expiresAt && matchedApiKey.expiresAt < new Date()) {
+                res.status(401).json(response_utils_1.ResponseUtils.error('API key has expired', 401));
+                return;
+            }
             const user = await connection_1.db.select().from(schema_1.users).where((0, drizzle_orm_1.eq)(schema_1.users.id, matchedApiKey.userId)).limit(1);
             if (!user[0] || !user[0].isActive) {
                 res.status(401).json(response_utils_1.ResponseUtils.error('API key associated with inactive user', 401));
                 return;
             }
             await connection_1.db.update(schema_1.apiKeys)
-                .set({ lastUsedAt: new Date().toISOString() })
+                .set({ lastUsedAt: new Date() })
                 .where((0, drizzle_orm_1.eq)(schema_1.apiKeys.id, matchedApiKey.id));
             req.user = {
                 id: user[0].id,

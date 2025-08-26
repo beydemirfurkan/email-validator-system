@@ -155,7 +155,7 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json(response_utils_1.ResponseUtils.error('Contact list not found', 404));
         }
         const updates = {
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date()
         };
         if (name !== undefined) {
             if (typeof name !== 'string' || name.trim().length === 0) {
@@ -219,7 +219,7 @@ router.delete('/:id', async (req, res) => {
         const deletedLists = await connection_1.db.update(schema_1.contactLists)
             .set({
             isActive: false,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date()
         })
             .where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema_1.contactLists.id, listId), (0, drizzle_orm_1.eq)(schema_1.contactLists.userId, user.id)))
             .returning({
@@ -230,7 +230,7 @@ router.delete('/:id', async (req, res) => {
             return res.status(404).json(response_utils_1.ResponseUtils.error('Contact list not found', 404));
         }
         await connection_1.db.update(schema_1.contacts)
-            .set({ updatedAt: new Date().toISOString() })
+            .set({ updatedAt: new Date() })
             .where((0, drizzle_orm_1.eq)(schema_1.contacts.contactListId, listId));
         const deletedList = deletedLists[0];
         return res.json(response_utils_1.ResponseUtils.success({

@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
         if (expiryDays && expiryDays > 0) {
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + expiryDays);
-            expiresAt = expiryDate.toISOString();
+            expiresAt = expiryDate;
         }
         const newApiKey = {
             userId: user.id,
@@ -304,7 +304,7 @@ router.post('/:id/extend', async (req, res) => {
         }
         const newExpiryDate = new Date();
         newExpiryDate.setDate(newExpiryDate.getDate() + expiryDays);
-        const expiresAt = newExpiryDate.toISOString();
+        const expiresAt = newExpiryDate;
         const updatedKeys = await connection_1.db.update(schema_1.apiKeys)
             .set({ expiresAt })
             .where((0, drizzle_orm_1.eq)(schema_1.apiKeys.id, apiKeyId))
@@ -331,7 +331,7 @@ router.post('/:id/extend', async (req, res) => {
 router.get('/expired', async (req, res) => {
     try {
         const user = req.user;
-        const now = new Date().toISOString();
+        const now = new Date();
         const expiredKeys = await connection_1.db.select({
             id: schema_1.apiKeys.id,
             keyName: schema_1.apiKeys.keyName,
@@ -356,7 +356,7 @@ router.get('/expired', async (req, res) => {
 router.post('/cleanup', async (req, res) => {
     try {
         const user = req.user;
-        const now = new Date().toISOString();
+        const now = new Date();
         const expiredKeys = await connection_1.db.select()
             .from(schema_1.apiKeys)
             .where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema_1.apiKeys.userId, user.id), (0, drizzle_orm_1.eq)(schema_1.apiKeys.isActive, true)));

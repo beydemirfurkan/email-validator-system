@@ -74,11 +74,11 @@ router.post('/', async (req: Request, res: Response) => {
     const hashedKey = await bcrypt.hash(rawKey, salt);
 
     // Calculate expiry date if specified
-    let expiresAt: string | undefined;
+    let expiresAt: Date | undefined;
     if (expiryDays && expiryDays > 0) {
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + expiryDays);
-      expiresAt = expiryDate.toISOString();
+      expiresAt = expiryDate;
     }
 
     // Create API key record
@@ -442,7 +442,7 @@ router.post('/:id/extend', async (req: Request, res: Response) => {
     // Calculate new expiry date
     const newExpiryDate = new Date();
     newExpiryDate.setDate(newExpiryDate.getDate() + expiryDays);
-    const expiresAt = newExpiryDate.toISOString();
+    const expiresAt = newExpiryDate;
 
     // Update API key expiry
     const updatedKeys = await db.update(apiKeys)
@@ -476,7 +476,7 @@ router.post('/:id/extend', async (req: Request, res: Response) => {
 router.get('/expired', async (req: Request, res: Response) => {
   try {
     const user = req.user!;
-    const now = new Date().toISOString();
+    const now = new Date();
 
     const expiredKeys = await db.select({
       id: apiKeys.id,
@@ -513,7 +513,7 @@ router.get('/expired', async (req: Request, res: Response) => {
 router.post('/cleanup', async (req: Request, res: Response) => {
   try {
     const user = req.user!;
-    const now = new Date().toISOString();
+    const now = new Date();
 
     // Find expired keys
     const expiredKeys = await db.select()

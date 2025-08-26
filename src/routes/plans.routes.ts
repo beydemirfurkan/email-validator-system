@@ -223,7 +223,7 @@ router.post('/:id/subscribe', async (req: Request, res: Response) => {
 
     // Calculate period dates
     const now = new Date();
-    const currentPeriodStart = now.toISOString();
+    const currentPeriodStart = now;
     let currentPeriodEnd: Date;
 
     if (plan.billingCycle === 'monthly') {
@@ -240,7 +240,7 @@ router.post('/:id/subscribe', async (req: Request, res: Response) => {
       planId: plan.id,
       status: 'active', // In real app, this would be 'pending' until payment confirms
       currentPeriodStart,
-      currentPeriodEnd: currentPeriodEnd.toISOString(),
+      currentPeriodEnd: currentPeriodEnd,
       cancelAtPeriodEnd: false,
       // In real implementation, add Stripe IDs
       stripeSubscriptionId: null,
@@ -262,12 +262,12 @@ router.post('/:id/subscribe', async (req: Request, res: Response) => {
       userId: user.id,
       planId: plan.id,
       currentPeriodStart,
-      currentPeriodEnd: currentPeriodEnd.toISOString(),
+      currentPeriodEnd: currentPeriodEnd,
       validationsUsed: 0,
       validationsLimit: plan.validationsPerMonth,
       apiCallsUsed: 0,
       apiCallsLimit: plan.apiAccess ? -1 : 0, // -1 means unlimited
-      lastResetAt: now.toISOString()
+      lastResetAt: now
     };
 
     await db.insert(usageQuotas).values(newUsageQuota);
@@ -325,7 +325,7 @@ router.put('/subscriptions/:id', async (req: Request, res: Response) => {
 
     // Build update object
     const updates: Partial<NewUserSubscription> = {
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     };
 
     if (cancelAtPeriodEnd !== undefined) {

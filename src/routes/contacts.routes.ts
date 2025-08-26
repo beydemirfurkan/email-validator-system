@@ -69,7 +69,7 @@ async function updateContactListStatistics(listId: number): Promise<void> {
       invalidContacts: invalidCount[0]?.count || 0,
       riskyContacts: riskyCount[0]?.count || 0,
       unknownContacts: unknownCount[0]?.count || 0,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     })
     .where(eq(contactLists.id, listId));
 }
@@ -337,7 +337,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     // Build update object
     const updates: Partial<NewContact> = {
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     };
 
     if (firstName !== undefined) {
@@ -380,7 +380,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       if (typeof isSubscribed === 'boolean') {
         updates.isSubscribed = isSubscribed;
         if (!isSubscribed) {
-          updates.unsubscribedAt = new Date().toISOString();
+          updates.unsubscribedAt = new Date();
         }
       }
     }
@@ -603,8 +603,8 @@ router.post('/:id/validate', async (req: Request, res: Response) => {
         validationStatus,
         validationResult: JSON.stringify(validationResult),
         validationScore: validationResult.score,
-        lastValidatedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        lastValidatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(contacts.id, contactId))
       .returning();

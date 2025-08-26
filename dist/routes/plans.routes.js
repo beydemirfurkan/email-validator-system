@@ -151,7 +151,7 @@ router.post('/:id/subscribe', async (req, res) => {
             return res.status(400).json(response_utils_1.ResponseUtils.error('User already has an active subscription', 400));
         }
         const now = new Date();
-        const currentPeriodStart = now.toISOString();
+        const currentPeriodStart = now;
         let currentPeriodEnd;
         if (plan.billingCycle === 'monthly') {
             currentPeriodEnd = new Date(now);
@@ -166,7 +166,7 @@ router.post('/:id/subscribe', async (req, res) => {
             planId: plan.id,
             status: 'active',
             currentPeriodStart,
-            currentPeriodEnd: currentPeriodEnd.toISOString(),
+            currentPeriodEnd: currentPeriodEnd,
             cancelAtPeriodEnd: false,
             stripeSubscriptionId: null,
             stripeCustomerId: null
@@ -182,12 +182,12 @@ router.post('/:id/subscribe', async (req, res) => {
             userId: user.id,
             planId: plan.id,
             currentPeriodStart,
-            currentPeriodEnd: currentPeriodEnd.toISOString(),
+            currentPeriodEnd: currentPeriodEnd,
             validationsUsed: 0,
             validationsLimit: plan.validationsPerMonth,
             apiCallsUsed: 0,
             apiCallsLimit: plan.apiAccess ? -1 : 0,
-            lastResetAt: now.toISOString()
+            lastResetAt: now
         };
         await connection_1.db.insert(schema_1.usageQuotas).values(newUsageQuota);
         return res.status(201).json(response_utils_1.ResponseUtils.success({
@@ -227,7 +227,7 @@ router.put('/subscriptions/:id', async (req, res) => {
             return res.status(404).json(response_utils_1.ResponseUtils.error('Subscription not found', 404));
         }
         const updates = {
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date()
         };
         if (cancelAtPeriodEnd !== undefined) {
             if (typeof cancelAtPeriodEnd === 'boolean') {

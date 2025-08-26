@@ -22,7 +22,7 @@ export declare const appConfig: {
         readonly methods: "GET, POST, OPTIONS";
     };
     readonly database: {
-        readonly path: "./database.sqlite";
+        readonly url: string;
     };
 };
 //# sourceMappingURL=app-config.d.ts.map
