@@ -1,0 +1,153 @@
+import { z } from 'zod';
+export declare const emailValidationSchema: z.ZodObject<{
+    email: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    email?: string;
+}, {
+    email?: string;
+}>;
+export declare const batchEmailValidationSchema: z.ZodObject<{
+    emails: z.ZodArray<z.ZodString, "many">;
+}, "strip", z.ZodTypeAny, {
+    emails?: string[];
+}, {
+    emails?: string[];
+}>;
+export declare const userRegistrationSchema: z.ZodObject<{
+    name: z.ZodString;
+    email: z.ZodString;
+    password: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    email?: string;
+    name?: string;
+    password?: string;
+}, {
+    email?: string;
+    name?: string;
+    password?: string;
+}>;
+export declare const userLoginSchema: z.ZodObject<{
+    email: z.ZodString;
+    password: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    email?: string;
+    password?: string;
+}, {
+    email?: string;
+    password?: string;
+}>;
+export declare const apiKeyCreationSchema: z.ZodObject<{
+    keyName: z.ZodString;
+    rateLimit: z.ZodOptional<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    keyName?: string;
+    rateLimit?: number;
+}, {
+    keyName?: string;
+    rateLimit?: number;
+}>;
+export declare const contactSchema: z.ZodObject<{
+    email: z.ZodString;
+    firstName: z.ZodOptional<z.ZodString>;
+    lastName: z.ZodOptional<z.ZodString>;
+    phone: z.ZodOptional<z.ZodString>;
+    company: z.ZodOptional<z.ZodString>;
+    customFields: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    notes: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    company?: string;
+    customFields?: Record<string, string>;
+    tags?: string[];
+    notes?: string;
+}, {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    company?: string;
+    customFields?: Record<string, string>;
+    tags?: string[];
+    notes?: string;
+}>;
+export declare const contactListSchema: z.ZodObject<{
+    name: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+}, "strip", z.ZodTypeAny, {
+    name?: string;
+    tags?: string[];
+    description?: string;
+}, {
+    name?: string;
+    tags?: string[];
+    description?: string;
+}>;
+export declare const bulkContactImportSchema: z.ZodObject<{
+    contactListId: z.ZodNumber;
+    contacts: z.ZodArray<z.ZodObject<{
+        email: z.ZodString;
+        firstName: z.ZodOptional<z.ZodString>;
+        lastName: z.ZodOptional<z.ZodString>;
+        phone: z.ZodOptional<z.ZodString>;
+        company: z.ZodOptional<z.ZodString>;
+        customFields: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+        notes: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        email?: string;
+        firstName?: string;
+        lastName?: string;
+        phone?: string;
+        company?: string;
+        customFields?: Record<string, string>;
+        tags?: string[];
+        notes?: string;
+    }, {
+        email?: string;
+        firstName?: string;
+        lastName?: string;
+        phone?: string;
+        company?: string;
+        customFields?: Record<string, string>;
+        tags?: string[];
+        notes?: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    contactListId?: number;
+    contacts?: {
+        email?: string;
+        firstName?: string;
+        lastName?: string;
+        phone?: string;
+        company?: string;
+        customFields?: Record<string, string>;
+        tags?: string[];
+        notes?: string;
+    }[];
+}, {
+    contactListId?: number;
+    contacts?: {
+        email?: string;
+        firstName?: string;
+        lastName?: string;
+        phone?: string;
+        company?: string;
+        customFields?: Record<string, string>;
+        tags?: string[];
+        notes?: string;
+    }[];
+}>;
+export type EmailValidationRequest = z.infer<typeof emailValidationSchema>;
+export type BatchEmailValidationRequest = z.infer<typeof batchEmailValidationSchema>;
+export type UserRegistrationRequest = z.infer<typeof userRegistrationSchema>;
+export type UserLoginRequest = z.infer<typeof userLoginSchema>;
+export type ApiKeyCreationRequest = z.infer<typeof apiKeyCreationSchema>;
+export type ContactRequest = z.infer<typeof contactSchema>;
+export type ContactListRequest = z.infer<typeof contactListSchema>;
+export type BulkContactImportRequest = z.infer<typeof bulkContactImportSchema>;
+//# sourceMappingURL=validation.d.ts.map

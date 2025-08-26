@@ -1,401 +1,464 @@
-# Advanced Email Validator API
+# 🚀 SaaS Email Validation API Platform
 
-Professional enterprise-grade email validation API with comprehensive fraud detection, batch processing, international domain support, and detailed analytics.
+Professional enterprise-grade SaaS email validation API with comprehensive user management, subscription handling, contact management, and advanced analytics. Built with TypeScript, Express, Drizzle ORM, and Zod validation.
 
-## 🚀 Key Features
+## ✨ Key Features
 
-- **🔍 Advanced Validation Pipeline** - 9-layer validation with comprehensive fraud detection
-- **🌍 International Domain Support** - Punycode conversion for international domains (münchen.de)
-- **➕ Smart Plus Addressing** - Provider-specific plus addressing validation
-- **🧠 AI-Powered Spam Detection** - Dynamic pattern recognition with contextual analysis
-- **📊 Batch Processing** - High-performance concurrent validation
-- **📂 File Processing** - CSV/Excel upload with validation results export
-- **🔒 Enterprise Security** - Thread-safe, input sanitization, comprehensive logging
-- **⚡ High Performance** - Intelligent caching, concurrent processing, memory optimization
+- **🔐 Complete SaaS Platform** - User authentication, API keys, subscription management
+- **📊 Contact Management** - Lists, contacts, bulk import/export, validation tracking
+- **💳 Subscription System** - Multiple plans, usage quotas, billing cycles
+- **📈 Advanced Analytics** - Dashboard, trends, validation logs, system stats
+- **🔍 9-Layer Email Validation** - Advanced fraud detection and pattern recognition
+- **📂 File Processing** - CSV/Excel batch processing with background queues
+- **🌍 International Support** - Punycode domains, UTF-8 encoding
+- **⚡ High Performance** - Concurrent processing, intelligent caching, TypeScript
 
-## 🛡️ Validation Pipeline
+## 🏗️ Technology Stack
 
-Our advanced validation system processes emails through **9 comprehensive layers**:
+- **Backend**: TypeScript + Express.js + Zod validation
+- **Database**: SQLite + Drizzle ORM (easy migration to PostgreSQL/MySQL)
+- **Authentication**: JWT + bcrypt + API Keys
+- **File Processing**: Multer + XLSX + CSV parser
+- **Caching**: In-memory MX record cache with TTL
+- **Security**: Rate limiting, input validation, type safety
 
-### 1. **Email Length Validation**
-- Rejects emails over 250 characters
-- Prevents resource exhaustion attacks
+## 📋 Complete API Documentation
 
-### 2. **International Domain Processing**
-- Converts international domains to Punycode (ASCII)
-- `test@münchen.de` → `test@xn--mnchen-3ya.de`
-- Validates but restricts non-ASCII characters in local part
-
-### 3. **Format & Character Validation**
-- RFC-compliant regex with practical restrictions
-- Blocks quoted strings: `"unusual"@domain.com` ❌
-- Blocks special characters: `user!name@domain.com` ❌
-- Allows only: `a-zA-Z0-9._+-`
-
-### 4. **Dynamic Suspicious Pattern Detection**
-- **Repetitive Characters**: `sssssssss@gmail.com` ❌
-- **Single Characters**: `x@gmail.com` ❌
-- **Sequential Patterns**: `abcdef@gmail.com`, `123456@gmail.com` ❌
-- **Keyboard Patterns**: `qwerty@gmail.com`, `asdfgh@gmail.com` ❌
-
-### 5. **Smart Plus Addressing Validation**
-- **Supported Providers**: Gmail, Yahoo, Outlook, iCloud
-- **Restricted Providers**: AOL, Yandex, Mail.ru, ProtonMail
-- Format validation: `user+tag@gmail.com` ✅, `user++tag@gmail.com` ❌
-
-### 6. **Typo Domain Detection**
-- Comprehensive typo domain database (500+ patterns)
-- `furkan@g-mail.com` → Suggests `gmail.com`
-- `admin@outlok.com` → Suggests `outlook.com`
-
-### 7. **Disposable Email Detection**
-- Real-time updated disposable domain list
-- Blocks temporary email services
-- `test@10minutemail.com` ❌
-
-### 8. **Intelligent Spam Keyword Analysis**
-- Dynamic ratio-based detection system
-- **SPAM**: Single spam keyword (`admin@gmail.com` ❌)
-- **SPAM**: All spam keywords (`test@fake-demo.com` ❌)
-- **VALID**: Mixed keywords (`contact@company-service.de` ✅)
-- Smart business context recognition
-
-### 9. **MX Record Validation**
-- DNS lookup with intelligent caching
-- Fallback to A records
-- TTL-based cache (5min success, 1min failure)
-
-## 📋 Spam Keyword Categories
-
-Our dynamic spam detection uses comprehensive keyword database:
-
-- **Core Spam**: spam, fake, temp, throwaway, junk, dummy, invalid
-- **System Accounts**: admin, noreply, bounce, daemon, automated
-- **Test Patterns**: test, demo, sample, placeholder, testing
-- **Development**: debug, dev, staging, beta, prototype
-- **Generic Placeholders**: null, undefined, empty, default
-- **Fake Names**: johndoe, janedoe, johnsmith, janesmith
-
-## 🔧 Quick Start
-
-### Node.js
+### 🔐 Authentication & User Management
 ```bash
+POST   /api/auth/register         # User registration
+POST   /api/auth/login            # User login
+GET    /api/auth/profile          # Get user profile
+PUT    /api/auth/profile          # Update user profile  
+PUT    /api/auth/password         # Change password
+POST   /api/auth/refresh          # Refresh JWT token
+```
+
+### 🔑 API Key Management
+```bash
+GET    /api/keys                  # List user's API keys
+POST   /api/keys                  # Create new API key
+GET    /api/keys/:id              # Get API key details
+PUT    /api/keys/:id              # Update API key
+DELETE /api/keys/:id              # Delete API key
+POST   /api/keys/:id/regenerate   # Regenerate API key
+```
+
+### 📧 Email Validation Core
+```bash
+POST   /api/validate-email        # Single email validation
+POST   /api/validate-emails       # Batch email validation
+GET    /api/health                # System health check
+```
+
+### 📁 File Processing & Background Jobs
+```bash
+POST   /api/files/validate-csv         # CSV file upload & validation
+POST   /api/files/validate-excel       # Excel file upload & validation
+GET    /api/files/status/:requestId    # Check processing status
+POST   /api/files/export-csv           # Export results as CSV
+POST   /api/files/export-excel         # Export results as Excel
+GET    /api/files/queue                # Processing queue status
+```
+
+### 📋 Contact List Management
+```bash
+GET    /api/contact-lists               # List user's contact lists
+POST   /api/contact-lists              # Create contact list
+GET    /api/contact-lists/:id          # Get contact list details
+PUT    /api/contact-lists/:id          # Update contact list
+DELETE /api/contact-lists/:id          # Delete contact list
+GET    /api/contact-lists/:id/statistics # Get list statistics
+```
+
+### 👥 Contact Management
+```bash
+GET    /api/contacts/lists/:listId/contacts  # List contacts in list
+POST   /api/contacts/lists/:listId/contacts  # Add contact to list
+GET    /api/contacts/:id                     # Get contact details
+PUT    /api/contacts/:id                     # Update contact
+DELETE /api/contacts/:id                     # Delete contact
+POST   /api/contacts/bulk-import             # Bulk import contacts
+POST   /api/contacts/:id/validate           # Validate specific contact
+```
+
+### 💳 Plans & Subscription Management
+```bash
+GET    /api/plans                      # List available plans (public)
+GET    /api/plans/:id                  # Get plan details (public)
+GET    /api/plans/subscriptions        # Get user's subscription
+POST   /api/plans/:id/subscribe        # Subscribe to plan
+PUT    /api/plans/subscriptions/:id    # Update subscription
+GET    /api/plans/usage                # Get usage statistics
+```
+
+### 📈 Analytics & Monitoring
+```bash
+GET    /api/analytics/dashboard         # Dashboard analytics
+GET    /api/analytics/validation-logs   # Validation history
+GET    /api/analytics/top-domains       # Most validated domains
+GET    /api/analytics/validation-trends # Validation trends over time
+GET    /api/analytics/system-stats      # System statistics
+POST   /api/analytics/cache/clear       # Clear system cache
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 16+
+- npm or yarn
+
+### Development Setup
+```bash
+# Clone the repository
+git clone <repository-url>
+cd email-validator-api
+
 # Install dependencies
 npm install
 
-# Development mode with hot reload
+# Build TypeScript
+npm run build
+
+# Start development server with hot reload
 npm run dev
 
-# Production mode
-npm start
+# Server runs on http://localhost:4444
 ```
 
-### Docker
+### Production Setup
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Or use PM2 for process management
+pm2 start ecosystem.config.cjs
+```
+
+### Docker Deployment
 ```bash
 # Build and run with Docker Compose
 docker-compose up -d
 
-# Access API at: http://localhost:5555
+# Access API at: http://localhost:4444
 ```
 
-### PM2 Process Manager
-```bash
-# Install PM2 globally
-npm install -g pm2
+## 📊 Usage Examples
 
-# Start with ecosystem config
-pm2 start ecosystem.config.cjs
+### 1. User Registration & Login
+```javascript
+// Register new user
+const registerResponse = await fetch('/api/auth/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: 'John Doe',
+    email: 'john@example.com',
+    password: 'securepassword123'
+  })
+});
 
-# Monitor processes
-pm2 status
-pm2 logs email-validator-api
+// Login
+const loginResponse = await fetch('/api/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: 'john@example.com',
+    password: 'securepassword123'
+  })
+});
+
+const { token } = await loginResponse.json();
 ```
 
-## 🌐 API Endpoints
-
-### Single Email Validation
-```http
-POST /api/validate-email
-Content-Type: application/json
-
-{
-  "email": "user@domain.com"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "email": "user@domain.com",
-  "valid": true,
-  "reason": null,
-  "details": {
-    "format": { "valid": true },
-    "disposable": { "valid": true },
-    "mx": { "valid": true },
-    "placeholder": { "valid": true },
-    "typo": { "valid": true }
+### 2. API Key Creation
+```javascript
+// Create API key (requires authentication)
+const apiKeyResponse = await fetch('/api/keys', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
   },
-  "timestamp": "2024-01-15T10:30:00.000Z"
-}
+  body: JSON.stringify({
+    keyName: 'Production Key',
+    rateLimit: 1000
+  })
+});
+
+const { apiKey } = await apiKeyResponse.json();
 ```
 
-### Batch Email Validation
-```http
-POST /api/validate-emails
-Content-Type: application/json
+### 3. Email Validation
+```javascript
+// Single email validation
+const validationResponse = await fetch('/api/validate-email', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'X-API-Key': 'evapi_your_api_key_here'
+  },
+  body: JSON.stringify({
+    email: 'user@domain.com'
+  })
+});
 
-{
-  "emails": ["user1@domain.com", "user2@domain.com"]
-}
+// Batch email validation
+const batchResponse = await fetch('/api/validate-emails', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'X-API-Key': 'evapi_your_api_key_here'
+  },
+  body: JSON.stringify({
+    emails: ['user1@domain.com', 'user2@domain.com']
+  })
+});
 ```
 
-### File Upload & Validation
-```http
-POST /api/validate-csv
-Content-Type: multipart/form-data
+### 4. Contact Management
+```javascript
+// Create contact list
+const listResponse = await fetch('/api/contact-lists', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    name: 'Marketing Leads',
+    description: 'Email list for marketing campaigns'
+  })
+});
 
-csvfile: [CSV file with email column]
+// Add contact to list
+const contactResponse = await fetch(`/api/contacts/lists/${listId}/contacts`, {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    email: 'lead@company.com',
+    firstName: 'Jane',
+    lastName: 'Smith',
+    company: 'Acme Corp'
+  })
+});
 ```
 
-```http
-POST /api/validate-excel
-Content-Type: multipart/form-data
+### 5. File Upload Processing
+```javascript
+// Upload CSV file for validation
+const formData = new FormData();
+formData.append('file', csvFile);
+formData.append('immediate', 'true'); // Process immediately
 
-excelfile: [Excel file with emails in first column]
+const uploadResponse = await fetch('/api/files/validate-csv', {
+  method: 'POST',
+  headers: { 
+    'Authorization': `Bearer ${token}`
+  },
+  body: formData
+});
 ```
 
-### Health Check & Statistics
-```http
-GET /api/health
+## 🛡️ Advanced Email Validation Pipeline
+
+Our system processes emails through **9 comprehensive layers**:
+
+1. **Length Validation** - Rejects 250+ character emails
+2. **International Domain Processing** - Punycode conversion (`münchen.de` → `xn--mnchen-3ya.de`)
+3. **Format & Character Validation** - RFC-compliant with practical restrictions
+4. **Dynamic Suspicious Pattern Detection** - AI-powered spam pattern recognition
+5. **Smart Plus Addressing Validation** - Provider-specific rules
+6. **Typo Domain Detection** - 500+ known typo patterns with suggestions
+7. **Disposable Email Detection** - Real-time updated database
+8. **Intelligent Spam Keyword Analysis** - Context-aware spam detection
+9. **MX Record Validation** - DNS lookup with intelligent caching
+
+### Validation Examples
+
+✅ **Valid Emails:**
+```
+john.doe@company.com              # Standard format
+user+newsletter@gmail.com         # Plus addressing (Gmail)
+info@ballenberg-service.ch        # Mixed keywords (business context)
+test@münchen.de                   # International domain
+contact@company-tech.de           # Business domain
 ```
 
-## 🔍 Advanced Validation Examples
-
-### ✅ Valid Emails
+❌ **Invalid Emails:**
 ```
-john.doe@company.com          # Standard format
-user+newsletter@gmail.com     # Plus addressing on supported provider
-info@ballenberg-service.ch    # Mixed spam/normal keywords
-test@münchen.de              # International domain (converts to punycode)
-contact@company-tech.de       # Business domain with spam keyword
-```
-
-### ❌ Invalid Emails
-```
-x@gmail.com                   # Single character local part
-admin@gmail.com               # Pure spam keyword
-user+tag@aol.com              # Plus addressing on unsupported provider
-sssssssss@gmail.com          # Repetitive characters
-test@g-mail.com               # Typo domain
-"quoted"@domain.com           # Quoted strings not allowed
-user!special@domain.com       # Special characters restricted
-fake@temp-spam.com            # Multiple spam keywords
-very.long.email.address...@domain.com  # 250+ characters
-```
-
-## ⚙️ Configuration
-
-Default settings in `config.js`:
-- **Port**: 4444
-- **Batch Size**: 10 emails per batch
-- **File Size Limit**: 100MB
-- **MX Cache TTL**: 5 minutes (success), 1 minute (failure)
-- **Supported Formats**: CSV, XLS, XLSX
-- **CORS**: Enabled for all origins
-
-## 📁 File Upload Requirements
-
-### CSV Files
-- **Email Columns**: `email`, `Email`, `EMAIL`, `e-mail`, `E-mail`, `mail`
-- **Formats**: `.csv`
-- **Encoding**: UTF-8
-- **Max Size**: 100MB
-
-### Excel Files
-- **Email Location**: First column or named email column
-- **Formats**: `.xls`, `.xlsx`
-- **Max Size**: 100MB
-
-## 🏗️ Project Architecture
-
-```
-├── app.js                    # Application entry point
-├── config.js                 # Configuration management
-├── nodemon.json              # Development auto-reload settings
-├── middleware.js             # Express middleware stack
-├── routes/                   # API route definitions
-│   ├── index.js
-│   ├── validation.js         # Email validation endpoints
-│   ├── file.js              # File upload & processing
-│   └── health.js            # Health check & monitoring
-├── services/                # Core business logic
-│   ├── EmailValidationService.js  # Main validation engine
-│   └── MxCache.js           # DNS caching with TTL
-├── data/                    # Configuration data
-│   ├── spam-keywords.txt    # Dynamic spam keyword database
-│   ├── typo-domains.txt     # Typo domain correction mappings
-│   └── placeholder-domains.txt  # Placeholder domain list
-├── utils/                   # Utility functions
-│   ├── fileUtils.js         # File processing utilities
-│   └── responseUtils.js     # API response formatting
-├── temp/                    # Temporary file storage
-└── logs/                    # Application logs
+x@gmail.com                       # Single character
+admin@gmail.com                   # Pure spam keyword
+user+tag@aol.com                  # Plus addressing (unsupported)
+sssssssss@gmail.com              # Repetitive characters
+test@g-mail.com                   # Typo domain
+fake@temp-spam.com                # Multiple spam keywords
 ```
 
 ## 🔒 Security Features
 
-- **Input Validation**: Comprehensive input sanitization
-- **File Security**: Type validation, size limits, scan protection
-- **Thread Safety**: Concurrent processing with atomic operations
-- **Memory Protection**: 250+ character email rejection
-- **Character Filtering**: Restricted special characters
-- **Cache Security**: TTL-based cache with automatic cleanup
-- **Docker Security**: Non-root user, minimal attack surface
+- **JWT Authentication** - Secure token-based auth with refresh
+- **API Key Management** - Secure API key generation and validation
+- **Rate Limiting** - Per-user, per-IP, and per-API-key limits
+- **Input Validation** - Zod schema validation for all endpoints
+- **Password Security** - bcrypt hashing with salt rounds
+- **File Upload Security** - Type validation, size limits, path sanitization
+- **SQL Injection Protection** - Drizzle ORM with parameterized queries
+- **TypeScript Safety** - Compile-time type checking
+
+## 📈 Subscription & Usage Management
+
+### Available Plans
+The system supports multiple subscription plans with:
+- **Validation Quotas** - Monthly email validation limits
+- **API Access** - Rate limiting and feature access
+- **Contact Management** - Number of contact lists and contacts
+- **File Processing** - Bulk validation capabilities
+- **Priority Support** - Different support tiers
+
+### Usage Tracking
+- Real-time usage monitoring
+- Quota enforcement
+- Usage analytics and reporting
+- Automatic quota reset
+- Overage notifications
+
+## 📊 Analytics & Monitoring
+
+### Dashboard Metrics
+- Total validations performed
+- Success/failure rates
+- Average processing times
+- Contact list statistics
+- Usage trends over time
+
+### System Monitoring
+- Cache performance (hit/miss rates)
+- Memory usage and optimization
+- Background job queue status
+- API response times
+- Error tracking and logging
+
+## 🐳 Docker Configuration
+
+### Development
+```bash
+# Development with hot reload
+docker-compose -f docker-compose.dev.yml up
+```
+
+### Production
+```bash
+# Production deployment
+docker-compose up -d
+
+# Scale for high availability
+docker-compose up -d --scale email-validator-api=3
+```
+
+### Environment Variables
+```env
+NODE_ENV=production
+PORT=4444
+JWT_SECRET=your-super-secret-jwt-key
+DATABASE_PATH=./database.sqlite
+LOG_LEVEL=info
+CACHE_TTL=300000
+MAX_FILE_SIZE=104857600
+RATE_LIMIT_WINDOW=900000
+RATE_LIMIT_MAX_REQUESTS=100
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── app.ts                        # Application entry point
+├── config/
+│   └── app-config.ts            # Configuration management
+├── database/
+│   ├── schema.ts                # Drizzle database schema
+│   └── connection.ts            # Database connection
+├── middleware/
+│   ├── auth.middleware.ts       # Authentication middleware
+│   └── rate-limiter.middleware.ts # Rate limiting
+├── routes/                      # API route handlers
+│   ├── auth.routes.ts           # Authentication endpoints
+│   ├── api-keys.routes.ts       # API key management
+│   ├── email-validation.routes.ts # Core validation
+│   ├── file-upload.routes.ts    # File processing
+│   ├── contact-lists.routes.ts  # Contact list management
+│   ├── contacts.routes.ts       # Contact management
+│   ├── plans.routes.ts          # Subscription management
+│   └── analytics.routes.ts      # Analytics & monitoring
+├── services/                    # Business logic services
+│   ├── email-validation.service.ts # Core validation engine
+│   ├── mx-cache.service.ts      # DNS caching service
+│   └── background-processor.service.ts # Background jobs
+├── types/                       # Type definitions
+│   ├── api.ts                   # API response types
+│   └── validation.ts            # Zod validation schemas
+└── utils/                       # Utility functions
+    ├── file.utils.ts            # File processing utilities
+    └── response.utils.ts        # API response helpers
+```
 
 ## 🚀 Performance Optimizations
 
-- **Concurrent Processing**: Parallel validation with `Promise.all`
-- **Intelligent Caching**: MX record caching with TTL
-- **Memory Management**: Automatic cache cleanup, size limits
-- **Dynamic Detection**: Pattern recognition without static lists
-- **Punycode Processing**: Efficient international domain handling
-- **Batch Processing**: Configurable batch sizes for optimal throughput
+- **Concurrent Processing** - Parallel validation with Promise.all
+- **Intelligent Caching** - MX record caching with TTL
+- **Background Processing** - Async file processing queues
+- **Database Optimization** - Indexed queries and connection pooling
+- **Memory Management** - Automatic cache cleanup and size limits
+- **TypeScript Performance** - Compile-time optimizations
 
-## 📊 Response Examples
+## 📝 API Response Format
 
-### Typo Domain Detection
-```json
-{
-  "valid": false,
-  "reason": "Domain appears to be a typo. Did you mean 'gmail.com'?",
-  "details": {
-    "typo": { 
-      "valid": false, 
-      "suggested": "gmail.com" 
-    }
-  }
+All API responses follow a consistent format:
+
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+  timestamp: string;
+  meta?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 ```
 
-### International Domain
-```json
-{
-  "email": "test@münchen.de",
-  "valid": true,
-  "normalized": "test@xn--mnchen-3ya.de"
-}
-```
+## 🔧 Configuration Options
 
-### Plus Addressing Restriction
-```json
-{
-  "email": "user+tag@aol.com",
-  "valid": false,
-  "reason": "Invalid email format",
-  "details": {
-    "format": { "valid": false }
-  }
-}
-```
+The system is highly configurable via `src/config/app-config.ts`:
 
-## 🐳 Docker Deployment
+- Server settings (port, limits)
+- Validation parameters (batch size, cache TTL)
+- File upload restrictions
+- CORS configuration
+- Database connection settings
 
-### Production Deployment
-```bash
-# Build optimized image
-docker build -t email-validator-api .
+## 📞 Support & Contributing
 
-# Run with custom port
-docker run -p 8080:4444 -e NODE_ENV=production email-validator-api
-
-# Docker Compose (recommended)
-docker-compose up -d
-
-# View logs
-docker-compose logs -f email-validator-api
-```
-
-### Docker Configuration
-- **Multi-stage build** for optimized image size
-- **Non-root user** for security
-- **Health checks** for container monitoring
-- **Memory limits** and **restart policies**
-
-## 📈 Monitoring & Logging
-
-### Health Check Response
-```json
-{
-  "status": "healthy",
-  "timestamp": "2024-01-15T10:30:00.000Z",
-  "uptime": 3600.123,
-  "memory": {
-    "rss": 67108864,
-    "heapTotal": 33554432,
-    "heapUsed": 16777216
-  },
-  "cache": {
-    "size": 150,
-    "hitRate": 85.5,
-    "hits": 1200,
-    "misses": 210
-  }
-}
-```
-
-### Available Scripts
-```bash
-npm start                     # Production server
-npm run dev                   # Development with auto-reload
-npm test                      # Run test suite (when available)
-```
-
-## 🌍 International Support
-
-- **Punycode Conversion**: Automatic international domain conversion
-- **UTF-8 Support**: Full Unicode support in file processing
-- **Multiple TLD Support**: Country-specific domain recognition
-- **Encoding Detection**: Automatic file encoding detection
-
-## 📝 Error Handling
-
-- **400 Bad Request**: Invalid input, malformed JSON
-- **413 Payload Too Large**: File size exceeds 100MB
-- **415 Unsupported Media Type**: Invalid file format
-- **429 Too Many Requests**: Rate limiting (if enabled)
-- **500 Internal Server Error**: Server-side processing errors
-
-## 🔧 Environment Variables
-
-```bash
-NODE_ENV=production           # Environment mode
-PORT=4444                     # Server port
-LOG_LEVEL=info               # Logging level
-MAX_FILE_SIZE=104857600      # 100MB in bytes
-CACHE_TTL=300000             # Cache TTL in milliseconds
-```
+- **Issues**: GitHub Issues for bug reports and feature requests
+- **Documentation**: Comprehensive inline documentation
+- **Contributing**: Follow TypeScript and ESLint guidelines
+- **Testing**: Unit tests with Jest (implement as needed)
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open Pull Request
-
-## 📞 Support
-
-- **Documentation**: Comprehensive API documentation
-- **Issues**: GitHub Issues for bug reports and feature requests
-- **Performance**: Optimized for high-volume email validation
-- **Enterprise**: Custom deployment and integration support available
+MIT License - see LICENSE file for details.
 
 ---
 
-**Built with Furkan Beydemir for reliable email validation at scale**
+**🚀 Ready for production! A complete SaaS email validation platform built with modern TypeScript architecture.**

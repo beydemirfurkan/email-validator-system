@@ -1,0 +1,139 @@
+config:
+  target: 'http://localhost:4444'
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 20
+      name: "Ramp up load"
+    - duration: 180
+      arrivalRate: 50
+      name: "Sustained high load"
+    - duration: 60
+      arrivalRate: 100
+      name: "Spike test"
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+  processor: './load-test-processor.js'
+
+scenarios:
+  - name: "Email Validation Load Test"
+    weight: 40
+    flow:
+      - post:
+          url: "/api/auth/register"
+          json:
+            name: "{{ $randomString() }}"
+            email: "{{ $randomEmail() }}"
+            password: "TestPass123!"
+          capture:
+            - json: "$.data.token"
+              as: "authToken"
+      - post:
+          url: "/api/keys"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            keyName: "Load Test Key"
+            rateLimit: 1000
+          capture:
+            - json: "$.data.apiKey.apiKey"
+              as: "apiKey"
+      - loop:
+        - post:
+            url: "/api/validate-email"
+            headers:
+              X-API-Key: "{{ apiKey }}"
+            json:
+              email: "{{ $randomEmail() }}"
+        count: 10
+        
+  - name: "Batch Validation Load Test"
+    weight: 30
+    flow:
+      - post:
+          url: "/api/auth/register"
+          json:
+            name: "{{ $randomString() }}"
+            email: "{{ $randomEmail() }}"
+            password: "TestPass123!"
+          capture:
+            - json: "$.data.token"
+              as: "authToken"
+      - post:
+          url: "/api/keys"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            keyName: "Batch Test Key"
+            rateLimit: 1000
+          capture:
+            - json: "$.data.apiKey.apiKey"
+              as: "apiKey"
+      - post:
+          url: "/api/validate-emails"
+          headers:
+            X-API-Key: "{{ apiKey }}"
+          json:
+            emails:
+              - "{{ $randomEmail() }}"
+              - "{{ $randomEmail() }}"
+              - "{{ $randomEmail() }}"
+              - "{{ $randomEmail() }}"
+              - "{{ $randomEmail() }}"
+              
+  - name: "Contact Management Load Test"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/auth/register"
+          json:
+            name: "{{ $randomString() }}"
+            email: "{{ $randomEmail() }}"
+            password: "TestPass123!"
+          capture:
+            - json: "$.data.token"
+              as: "authToken"
+      - post:
+          url: "/api/contact-lists"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            name: "Load Test List {{ $randomString() }}"
+            description: "Load testing contact list"
+          capture:
+            - json: "$.data.contactList.id"
+              as: "contactListId"
+      - loop:
+        - post:
+            url: "/api/contacts/lists/{{ contactListId }}/contacts"
+            headers:
+              Authorization: "Bearer {{ authToken }}"
+            json:
+              email: "{{ $randomEmail() }}"
+              firstName: "{{ $randomFirstName() }}"
+              lastName: "{{ $randomLastName() }}"
+        count: 5
+        
+  - name: "Analytics Load Test"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/auth/register"
+          json:
+            name: "{{ $randomString() }}"
+            email: "{{ $randomEmail() }}"
+            password: "TestPass123!"
+          capture:
+            - json: "$.data.token"
+              as: "authToken"
+      - get:
+          url: "/api/analytics/dashboard"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      - get:
+          url: "/api/analytics/system-stats"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
