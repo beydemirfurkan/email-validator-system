@@ -17,6 +17,7 @@ export const apiKeys = sqliteTable('api_keys', {
   keyName: text('key_name').notNull(),
   apiKey: text('api_key').notNull().unique(),
   lastUsedAt: text('last_used_at'),
+  expiresAt: text('expires_at'),
   isActive: integer('is_active', { mode: 'boolean' }).default(true),
   rateLimit: integer('rate_limit').default(100),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),

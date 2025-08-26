@@ -23,6 +23,7 @@ router.get('/', async (req: Request, res: Response) => {
       id: apiKeys.id,
       keyName: apiKeys.keyName,
       lastUsedAt: apiKeys.lastUsedAt,
+      expiresAt: apiKeys.expiresAt,
       isActive: apiKeys.isActive,
       rateLimit: apiKeys.rateLimit,
       createdAt: apiKeys.createdAt
@@ -48,7 +49,7 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const user = req.user!;
     const validatedData = apiKeyCreationSchema.parse(req.body);
-    const { keyName, rateLimit } = validatedData;
+    const { keyName, rateLimit, expiryDays } = validatedData;
 
     // Check if user already has an API key with this name
     const existingKey = await db.select()
@@ -72,12 +73,21 @@ router.post('/', async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(12);
     const hashedKey = await bcrypt.hash(rawKey, salt);
 
+    // Calculate expiry date if specified
+    let expiresAt: string | undefined;
+    if (expiryDays && expiryDays > 0) {
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + expiryDays);
+      expiresAt = expiryDate.toISOString();
+    }
+
     // Create API key record
     const newApiKey: any = {
       userId: user.id,
       keyName,
       apiKey: hashedKey,
       rateLimit: rateLimit || 100,
+      expiresAt,
       isActive: true
     };
 
@@ -85,6 +95,7 @@ router.post('/', async (req: Request, res: Response) => {
       id: apiKeys.id,
       keyName: apiKeys.keyName,
       rateLimit: apiKeys.rateLimit,
+      expiresAt: apiKeys.expiresAt,
       isActive: apiKeys.isActive,
       createdAt: apiKeys.createdAt
     });
@@ -135,6 +146,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       id: apiKeys.id,
       keyName: apiKeys.keyName,
       lastUsedAt: apiKeys.lastUsedAt,
+      expiresAt: apiKeys.expiresAt,
       isActive: apiKeys.isActive,
       rateLimit: apiKeys.rateLimit,
       createdAt: apiKeys.createdAt,
@@ -388,6 +400,162 @@ router.post('/:id/regenerate', async (req: Request, res: Response) => {
     console.error('API key regeneration error:', error);
     return res.status(500).json(
       ResponseUtils.serverError('Failed to regenerate API key', error as Error)
+    );
+  }
+});
+
+// POST /api/keys/:id/extend - Extend API key expiry
+router.post('/:id/extend', async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+    const { expiryDays } = req.body;
+
+    const apiKeyId = parseInt(id!);
+    if (isNaN(apiKeyId)) {
+      return res.status(400).json(
+        ResponseUtils.validationError('Invalid API key ID')
+      );
+    }
+
+    if (!expiryDays || typeof expiryDays !== 'number' || expiryDays < 1 || expiryDays > 365) {
+      return res.status(400).json(
+        ResponseUtils.validationError('Expiry days must be between 1 and 365')
+      );
+    }
+
+    // Verify API key belongs to user
+    const existingKey = await db.select()
+      .from(apiKeys)
+      .where(and(
+        eq(apiKeys.id, apiKeyId),
+        eq(apiKeys.userId, user.id)
+      ))
+      .limit(1);
+
+    if (existingKey.length === 0) {
+      return res.status(404).json(
+        ResponseUtils.error('API key not found', 404)
+      );
+    }
+
+    // Calculate new expiry date
+    const newExpiryDate = new Date();
+    newExpiryDate.setDate(newExpiryDate.getDate() + expiryDays);
+    const expiresAt = newExpiryDate.toISOString();
+
+    // Update API key expiry
+    const updatedKeys = await db.update(apiKeys)
+      .set({ expiresAt })
+      .where(eq(apiKeys.id, apiKeyId))
+      .returning({
+        id: apiKeys.id,
+        keyName: apiKeys.keyName,
+        expiresAt: apiKeys.expiresAt,
+        updatedAt: apiKeys.updatedAt
+      });
+
+    const updatedKey = updatedKeys[0];
+    if (!updatedKey) {
+      throw new Error('Failed to extend API key expiry');
+    }
+
+    return res.json(ResponseUtils.success({
+      message: `API key expiry extended by ${expiryDays} days`,
+      apiKey: updatedKey
+    }));
+  } catch (error) {
+    console.error('API key expiry extension error:', error);
+    return res.status(500).json(
+      ResponseUtils.serverError('Failed to extend API key expiry', error as Error)
+    );
+  }
+});
+
+// GET /api/keys/expired - List expired API keys
+router.get('/expired', async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const now = new Date().toISOString();
+
+    const expiredKeys = await db.select({
+      id: apiKeys.id,
+      keyName: apiKeys.keyName,
+      expiresAt: apiKeys.expiresAt,
+      lastUsedAt: apiKeys.lastUsedAt,
+      createdAt: apiKeys.createdAt
+    })
+    .from(apiKeys)
+    .where(and(
+      eq(apiKeys.userId, user.id),
+      eq(apiKeys.isActive, true)
+    ))
+    .orderBy(apiKeys.expiresAt);
+
+    // Filter expired keys (handle null expiresAt as never expires)
+    const expiredApiKeys = expiredKeys.filter(key => 
+      key.expiresAt && key.expiresAt < now
+    );
+
+    return res.json(ResponseUtils.success({
+      expiredKeys: expiredApiKeys,
+      total: expiredApiKeys.length
+    }));
+  } catch (error) {
+    console.error('Expired API keys fetch error:', error);
+    return res.status(500).json(
+      ResponseUtils.serverError('Failed to fetch expired API keys', error as Error)
+    );
+  }
+});
+
+// POST /api/keys/cleanup - Clean up expired API keys
+router.post('/cleanup', async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const now = new Date().toISOString();
+
+    // Find expired keys
+    const expiredKeys = await db.select()
+      .from(apiKeys)
+      .where(and(
+        eq(apiKeys.userId, user.id),
+        eq(apiKeys.isActive, true)
+      ));
+
+    const keysToDeactivate = expiredKeys.filter(key => 
+      key.expiresAt && key.expiresAt < now
+    );
+
+    if (keysToDeactivate.length === 0) {
+      return res.json(ResponseUtils.success({
+        message: 'No expired API keys found',
+        cleanedCount: 0
+      }));
+    }
+
+    // Deactivate expired keys
+    const keyIds = keysToDeactivate.map(key => key.id);
+    
+    for (const keyId of keyIds) {
+      await db.update(apiKeys)
+        .set({ isActive: false })
+        .where(eq(apiKeys.id, keyId));
+    }
+
+    return res.json(ResponseUtils.success({
+      message: `Deactivated ${keysToDeactivate.length} expired API keys`,
+      cleanedCount: keysToDeactivate.length,
+      deactivatedKeys: keysToDeactivate.map(key => ({
+        id: key.id,
+        keyName: key.keyName,
+        expiresAt: key.expiresAt
+      }))
+    }));
+  } catch (error) {
+    console.error('API key cleanup error:', error);
+    return res.status(500).json(
+      ResponseUtils.serverError('Failed to cleanup expired API keys', error as Error)
     );
   }
 });

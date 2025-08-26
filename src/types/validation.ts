@@ -22,6 +22,7 @@ export const userLoginSchema = z.object({
 export const apiKeyCreationSchema = z.object({
   keyName: z.string().min(1, 'Key name is required').max(255, 'Key name too long'),
   rateLimit: z.number().int().min(1).max(10000).optional(),
+  expiryDays: z.number().int().min(1).max(365).optional(),
 });
 
 export const contactSchema = z.object({

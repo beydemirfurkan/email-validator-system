@@ -31,11 +31,11 @@ class DatabaseConnectionPool {
 
   constructor(config: Partial<ConnectionPoolConfig> = {}) {
     this.config = {
-      maxConnections: config.maxConnections || 10,
-      acquireTimeoutMs: config.acquireTimeoutMs || 30000,
-      createTimeoutMs: config.createTimeoutMs || 10000,
-      idleTimeoutMs: config.idleTimeoutMs || 300000, // 5 minutes
-      reapIntervalMs: config.reapIntervalMs || 60000, // 1 minute
+      maxConnections: config.maxConnections || 20, // Increased for better concurrency
+      acquireTimeoutMs: config.acquireTimeoutMs || 15000, // Reduced timeout for faster failure
+      createTimeoutMs: config.createTimeoutMs || 5000, // Faster connection creation
+      idleTimeoutMs: config.idleTimeoutMs || 180000, // 3 minutes - faster cleanup
+      reapIntervalMs: config.reapIntervalMs || 30000, // 30 seconds - more frequent cleanup
       ...config
     };
 
@@ -48,16 +48,19 @@ class DatabaseConnectionPool {
   private createConnection(): Database.Database {
     const db = new Database(process.env.DATABASE_PATH || './database.sqlite');
     
-    // Optimize SQLite settings for concurrent access
+    // Optimize SQLite settings for high-performance concurrent access
     db.pragma('journal_mode = WAL');
     db.pragma('synchronous = NORMAL');
-    db.pragma('cache_size = 1000');
+    db.pragma('cache_size = 2000'); // Doubled cache size
     db.pragma('temp_store = MEMORY');
-    db.pragma('mmap_size = 268435456'); // 256MB
+    db.pragma('mmap_size = 536870912'); // 512MB - doubled memory mapping
     db.pragma('foreign_keys = ON');
     
-    // Set busy timeout to handle concurrent access
-    db.pragma('busy_timeout = 5000');
+    // Increased busy timeout for better concurrency handling
+    db.pragma('busy_timeout = 10000'); // 10 seconds
+    
+    // Enable automatic index creation for better query performance
+    db.pragma('automatic_index = ON');
     
     this.stats.created++;
     return db;
@@ -247,11 +250,11 @@ class DatabaseConnectionPool {
   }
 }
 
-// Global connection pool instance
+// Global connection pool instance with optimized defaults
 const connectionPool = new DatabaseConnectionPool({
-  maxConnections: parseInt(process.env.DB_MAX_CONNECTIONS || '10'),
-  acquireTimeoutMs: parseInt(process.env.DB_ACQUIRE_TIMEOUT || '30000'),
-  idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '300000')
+  maxConnections: parseInt(process.env.DB_MAX_CONNECTIONS || '20'),
+  acquireTimeoutMs: parseInt(process.env.DB_ACQUIRE_TIMEOUT || '15000'),
+  idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '180000')
 });
 
 // Optimized database wrapper with connection pooling

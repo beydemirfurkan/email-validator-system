@@ -12,13 +12,13 @@ const router = Router();
 
 // Rate limiters for auth endpoints
 const registerLimiter = RateLimiterMiddleware.create({
-  maxRequests: 5, // 5 registration attempts per hour per IP
+  maxRequests: 100, // 100 registration attempts per hour per IP
   windowMs: 60 * 60 * 1000,
   message: 'Too many registration attempts, please try again later'
 });
 
 const loginLimiter = RateLimiterMiddleware.create({
-  maxRequests: 10, // 10 login attempts per 15 minutes per IP
+  maxRequests: 200, // 200 login attempts per 15 minutes per IP
   windowMs: 15 * 60 * 1000,
   message: 'Too many login attempts, please try again later'
 });

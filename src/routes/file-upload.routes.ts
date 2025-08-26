@@ -51,7 +51,7 @@ const upload = multer({
 
 // Rate limiter for file uploads
 const fileUploadLimiter = RateLimiterMiddleware.create({
-  maxRequests: 10, // 10 file uploads per hour per user
+  maxRequests: 50, // 50 file uploads per hour per user
   windowMs: 60 * 60 * 1000,
   message: 'Too many file uploads, please try again later',
   keyGenerator: (req) => req.user ? `upload:user:${req.user.id}` : `upload:ip:${req.ip}`
