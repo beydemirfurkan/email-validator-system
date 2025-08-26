@@ -37,8 +37,7 @@ router.post('/register', registerLimiter, async (req, res) => {
         const newUser = {
             name,
             email: email.toLowerCase(),
-            password: hashedPassword,
-            isActive: true
+            password: hashedPassword
         };
         const createdUsers = await connection_1.db.insert(schema_1.users).values(newUser).returning({
             id: schema_1.users.id,
@@ -131,8 +130,7 @@ router.put('/profile', auth_middleware_1.AuthMiddleware.authenticateToken, async
         }
         const updatedUsers = await connection_1.db.update(schema_1.users)
             .set({
-            name: name.trim(),
-            updatedAt: new Date().toISOString()
+            name: name.trim()
         })
             .where((0, drizzle_orm_1.eq)(schema_1.users.id, user.id))
             .returning({
@@ -178,7 +176,6 @@ router.put('/password', auth_middleware_1.AuthMiddleware.authenticateToken, asyn
         await connection_1.db.update(schema_1.users)
             .set({
             password: hashedNewPassword,
-            updatedAt: new Date().toISOString()
         })
             .where((0, drizzle_orm_1.eq)(schema_1.users.id, user.id));
         return res.json(response_utils_1.ResponseUtils.success({

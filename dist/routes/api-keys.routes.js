@@ -140,9 +140,7 @@ router.put('/:id', async (req, res) => {
         if (existingKey.length === 0) {
             return res.status(404).json(response_utils_1.ResponseUtils.error('API key not found', 404));
         }
-        const updates = {
-            updatedAt: new Date().toISOString()
-        };
+        const updates = {};
         if (keyName !== undefined) {
             if (typeof keyName !== 'string' || keyName.trim().length === 0) {
                 return res.status(400).json(response_utils_1.ResponseUtils.validationError('Key name must be a non-empty string'));
@@ -248,7 +246,6 @@ router.post('/:id/regenerate', async (req, res) => {
         const updatedKeys = await connection_1.db.update(schema_1.apiKeys)
             .set({
             apiKey: hashedKey,
-            updatedAt: new Date().toISOString()
         })
             .where((0, drizzle_orm_1.eq)(schema_1.apiKeys.id, apiKeyId))
             .returning({

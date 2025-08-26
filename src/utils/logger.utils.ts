@@ -340,7 +340,7 @@ class Logger {
     if (!email || !email.includes('@')) return email;
     
     const [local, domain] = email.split('@');
-    if (local.length <= 2) return email;
+    if (!local || !domain || local.length <= 2) return email;
     
     const maskedLocal = local[0] + '*'.repeat(local.length - 2) + local[local.length - 1];
     return `${maskedLocal}@${domain}`;
@@ -353,8 +353,8 @@ class Logger {
       const files = fs.readdirSync(this.logDir);
       
       return files
-        .filter(file => file.endsWith('.log'))
-        .map(file => {
+        .filter((file: string) => file.endsWith('.log'))
+        .map((file: string) => {
           const filePath = join(this.logDir, file);
           const stats = fs.statSync(filePath);
           
@@ -364,7 +364,7 @@ class Logger {
             modified: stats.mtime
           };
         })
-        .sort((a, b) => b.modified.getTime() - a.modified.getTime());
+        .sort((a: { modified: Date }, b: { modified: Date }) => b.modified.getTime() - a.modified.getTime());
     } catch (error) {
       this.error('Failed to get log files', error as Error);
       return [];

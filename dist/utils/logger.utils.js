@@ -264,7 +264,7 @@ class Logger {
         if (!email || !email.includes('@'))
             return email;
         const [local, domain] = email.split('@');
-        if (local.length <= 2)
+        if (!local || !domain || local.length <= 2)
             return email;
         const maskedLocal = local[0] + '*'.repeat(local.length - 2) + local[local.length - 1];
         return `${maskedLocal}@${domain}`;
@@ -274,8 +274,8 @@ class Logger {
             const fs = require('fs');
             const files = fs.readdirSync(this.logDir);
             return files
-                .filter(file => file.endsWith('.log'))
-                .map(file => {
+                .filter((file) => file.endsWith('.log'))
+                .map((file) => {
                 const filePath = (0, path_1.join)(this.logDir, file);
                 const stats = fs.statSync(filePath);
                 return {

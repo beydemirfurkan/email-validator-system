@@ -2,49 +2,49 @@ import { z } from 'zod';
 export declare const emailValidationSchema: z.ZodObject<{
     email: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    email?: string;
+    email: string;
 }, {
-    email?: string;
+    email: string;
 }>;
 export declare const batchEmailValidationSchema: z.ZodObject<{
     emails: z.ZodArray<z.ZodString, "many">;
 }, "strip", z.ZodTypeAny, {
-    emails?: string[];
+    emails: string[];
 }, {
-    emails?: string[];
+    emails: string[];
 }>;
 export declare const userRegistrationSchema: z.ZodObject<{
     name: z.ZodString;
     email: z.ZodString;
     password: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    email?: string;
-    name?: string;
-    password?: string;
+    email: string;
+    name: string;
+    password: string;
 }, {
-    email?: string;
-    name?: string;
-    password?: string;
+    email: string;
+    name: string;
+    password: string;
 }>;
 export declare const userLoginSchema: z.ZodObject<{
     email: z.ZodString;
     password: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    email?: string;
-    password?: string;
+    email: string;
+    password: string;
 }, {
-    email?: string;
-    password?: string;
+    email: string;
+    password: string;
 }>;
 export declare const apiKeyCreationSchema: z.ZodObject<{
     keyName: z.ZodString;
     rateLimit: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    keyName?: string;
-    rateLimit?: number;
+    keyName: string;
+    rateLimit?: number | undefined;
 }, {
-    keyName?: string;
-    rateLimit?: number;
+    keyName: string;
+    rateLimit?: number | undefined;
 }>;
 export declare const contactSchema: z.ZodObject<{
     email: z.ZodString;
@@ -56,36 +56,36 @@ export declare const contactSchema: z.ZodObject<{
     tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     notes: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    email?: string;
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-    company?: string;
-    customFields?: Record<string, string>;
-    tags?: string[];
-    notes?: string;
+    email: string;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    phone?: string | undefined;
+    company?: string | undefined;
+    customFields?: Record<string, string> | undefined;
+    tags?: string[] | undefined;
+    notes?: string | undefined;
 }, {
-    email?: string;
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-    company?: string;
-    customFields?: Record<string, string>;
-    tags?: string[];
-    notes?: string;
+    email: string;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    phone?: string | undefined;
+    company?: string | undefined;
+    customFields?: Record<string, string> | undefined;
+    tags?: string[] | undefined;
+    notes?: string | undefined;
 }>;
 export declare const contactListSchema: z.ZodObject<{
     name: z.ZodString;
     description: z.ZodOptional<z.ZodString>;
     tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    name?: string;
-    tags?: string[];
-    description?: string;
+    name: string;
+    tags?: string[] | undefined;
+    description?: string | undefined;
 }, {
-    name?: string;
-    tags?: string[];
-    description?: string;
+    name: string;
+    tags?: string[] | undefined;
+    description?: string | undefined;
 }>;
 export declare const bulkContactImportSchema: z.ZodObject<{
     contactListId: z.ZodNumber;
@@ -99,47 +99,47 @@ export declare const bulkContactImportSchema: z.ZodObject<{
         tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
         notes: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        email?: string;
-        firstName?: string;
-        lastName?: string;
-        phone?: string;
-        company?: string;
-        customFields?: Record<string, string>;
-        tags?: string[];
-        notes?: string;
+        email: string;
+        firstName?: string | undefined;
+        lastName?: string | undefined;
+        phone?: string | undefined;
+        company?: string | undefined;
+        customFields?: Record<string, string> | undefined;
+        tags?: string[] | undefined;
+        notes?: string | undefined;
     }, {
-        email?: string;
-        firstName?: string;
-        lastName?: string;
-        phone?: string;
-        company?: string;
-        customFields?: Record<string, string>;
-        tags?: string[];
-        notes?: string;
+        email: string;
+        firstName?: string | undefined;
+        lastName?: string | undefined;
+        phone?: string | undefined;
+        company?: string | undefined;
+        customFields?: Record<string, string> | undefined;
+        tags?: string[] | undefined;
+        notes?: string | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
-    contactListId?: number;
-    contacts?: {
-        email?: string;
-        firstName?: string;
-        lastName?: string;
-        phone?: string;
-        company?: string;
-        customFields?: Record<string, string>;
-        tags?: string[];
-        notes?: string;
+    contactListId: number;
+    contacts: {
+        email: string;
+        firstName?: string | undefined;
+        lastName?: string | undefined;
+        phone?: string | undefined;
+        company?: string | undefined;
+        customFields?: Record<string, string> | undefined;
+        tags?: string[] | undefined;
+        notes?: string | undefined;
     }[];
 }, {
-    contactListId?: number;
-    contacts?: {
-        email?: string;
-        firstName?: string;
-        lastName?: string;
-        phone?: string;
-        company?: string;
-        customFields?: Record<string, string>;
-        tags?: string[];
-        notes?: string;
+    contactListId: number;
+    contacts: {
+        email: string;
+        firstName?: string | undefined;
+        lastName?: string | undefined;
+        phone?: string | undefined;
+        company?: string | undefined;
+        customFields?: Record<string, string> | undefined;
+        tags?: string[] | undefined;
+        notes?: string | undefined;
     }[];
 }>;
 export type EmailValidationRequest = z.infer<typeof emailValidationSchema>;

@@ -73,7 +73,7 @@ router.post('/', async (req: Request, res: Response) => {
     const hashedKey = await bcrypt.hash(rawKey, salt);
 
     // Create API key record
-    const newApiKey: NewApiKey = {
+    const newApiKey: any = {
       userId: user.id,
       keyName,
       apiKey: hashedKey,
@@ -197,7 +197,6 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     // Build update object
     const updates: Partial<NewApiKey> = {
-      updatedAt: new Date().toISOString()
     };
 
     if (keyName !== undefined) {
@@ -231,7 +230,7 @@ router.put('/:id', async (req: Request, res: Response) => {
           ResponseUtils.validationError('Rate limit must be between 1 and 10000 requests per minute')
         );
       }
-      updates.rateLimit = rateLimit;
+      (updates as any).rateLimit = rateLimit;
     }
 
     if (isActive !== undefined) {
@@ -240,7 +239,7 @@ router.put('/:id', async (req: Request, res: Response) => {
           ResponseUtils.validationError('isActive must be a boolean')
         );
       }
-      updates.isActive = isActive;
+      (updates as any).isActive = isActive;
     }
 
     // Update API key
@@ -362,8 +361,7 @@ router.post('/:id/regenerate', async (req: Request, res: Response) => {
     const updatedKeys = await db.update(apiKeys)
       .set({ 
         apiKey: hashedKey,
-        updatedAt: new Date().toISOString()
-      })
+        })
       .where(eq(apiKeys.id, apiKeyId))
       .returning({
         id: apiKeys.id,

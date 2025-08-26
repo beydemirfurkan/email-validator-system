@@ -46,8 +46,7 @@ router.post('/register', registerLimiter, async (req: Request, res: Response) =>
     const newUser: NewUser = {
       name,
       email: email.toLowerCase(),
-      password: hashedPassword,
-      isActive: true
+      password: hashedPassword
     };
 
     const createdUsers = await db.insert(users).values(newUser).returning({
@@ -184,8 +183,7 @@ router.put('/profile', AuthMiddleware.authenticateToken, async (req: Request, re
     // Update user
     const updatedUsers = await db.update(users)
       .set({ 
-        name: name.trim(),
-        updatedAt: new Date().toISOString()
+        name: name.trim()
       })
       .where(eq(users.id, user.id))
       .returning({
@@ -257,7 +255,6 @@ router.put('/password', AuthMiddleware.authenticateToken, async (req: Request, r
     await db.update(users)
       .set({ 
         password: hashedNewPassword,
-        updatedAt: new Date().toISOString()
       })
       .where(eq(users.id, user.id));
 

@@ -2,6 +2,7 @@ import request from 'supertest';
 import app from '../src/app';
 import { db } from '../src/database/connection';
 import { users, apiKeys, contactLists, contacts } from '../src/database/schema';
+import { eq } from 'drizzle-orm';
 
 describe('Contact Management API Tests', () => {
   let userToken: string;
@@ -104,13 +105,13 @@ describe('Contact Management API Tests', () => {
   describe('GET /api/contacts/lists/:listId/contacts', () => {
     beforeAll(async () => {
       // Add multiple contacts for testing
-      const contacts = [
+      const testContacts = [
         { email: 'contact2@example.com', firstName: 'Alice', validationStatus: 'valid' },
         { email: 'contact3@example.com', firstName: 'Bob', validationStatus: 'invalid' },
         { email: 'contact4@example.com', firstName: 'Charlie', validationStatus: 'risky' }
       ];
 
-      for (const contact of contacts) {
+      for (const contact of testContacts) {
         await request(app)
           .post(`/api/contacts/lists/${contactListId}/contacts`)
           .set('Authorization', `Bearer ${userToken}`)
@@ -118,9 +119,9 @@ describe('Contact Management API Tests', () => {
 
         if (contact.validationStatus !== 'pending') {
           // Update validation status directly in database for testing
-          await db.update(contactLists)
-            .set({ validationStatus: contact.validationStatus })
-            .where({ email: contact.email });
+          await db.update(contacts)
+            .set({ validationStatus: contact.validationStatus } as any)
+            .where(eq(contacts.email, contact.email));
         }
       }
     });

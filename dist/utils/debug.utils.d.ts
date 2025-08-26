@@ -48,14 +48,14 @@ declare class DebugUtils {
         error?: undefined;
     } | {
         error: string;
-        cacheStats: any;
+        cacheStats: null;
         cacheSize?: undefined;
         hitRate?: undefined;
     };
     static getSystemHealth(): Promise<{
         status: string;
         healthScore: number;
-        issues: any[];
+        issues: string[];
         timestamp: string;
         uptime: number;
         components: {
@@ -102,7 +102,7 @@ declare class DebugUtils {
                 error?: undefined;
             } | {
                 error: string;
-                cacheStats: any;
+                cacheStats: null;
                 cacheSize?: undefined;
                 hitRate?: undefined;
             };
@@ -127,9 +127,9 @@ declare class DebugUtils {
             timestamp: string;
             method: string;
             url: string;
-            duration: number;
-            statusCode: number;
-            error: string;
+            duration: number | undefined;
+            statusCode: number | undefined;
+            error: string | undefined;
         }[];
     };
     static clearMetrics(): void;

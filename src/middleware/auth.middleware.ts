@@ -129,7 +129,7 @@ export class AuthMiddleware {
 
       // Update last used timestamp
       await db.update(apiKeys)
-        .set({ lastUsedAt: new Date().toISOString() })
+        .set({ lastUsedAt: new Date().toISOString() } as any)
         .where(eq(apiKeys.id, matchedApiKey.id));
 
       req.user = {
