@@ -3,9 +3,11 @@ import { eq, and, desc } from 'drizzle-orm';
 import { db } from '../database/connection';
 import { plans, planFeatures, userSubscriptions, usageQuotas, NewUserSubscription, NewUsageQuota } from '../database/schema';
 import { AuthMiddleware } from '../middleware/auth.middleware';
+import { UsageTrackingService } from '../services/usage-tracking.service';
 import { ResponseUtils } from '../utils/response.utils';
 
 const router = Router();
+const usageTracker = new UsageTrackingService();
 
 // GET /api/plans - List all available plans (public)
 router.get('/', async (req: Request, res: Response) => {
@@ -374,69 +376,21 @@ router.get('/usage', async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
-    // Get current active subscription with usage
-    const subscriptionData = await db.select({
-      subscription: userSubscriptions,
-      plan: plans,
-      usage: usageQuotas
-    })
-    .from(userSubscriptions)
-    .innerJoin(plans, eq(userSubscriptions.planId, plans.id))
-    .leftJoin(usageQuotas, and(
-      eq(usageQuotas.userId, user.id),
-      eq(usageQuotas.planId, plans.id)
-    ))
-    .where(and(
-      eq(userSubscriptions.userId, user.id),
-      eq(userSubscriptions.status, 'active')
-    ))
-    .orderBy(desc(userSubscriptions.createdAt))
-    .limit(1);
+    // Ensure user has usage quota
+    await usageTracker.ensureUsageQuota(user.id);
 
-    if (subscriptionData.length === 0) {
-      return res.json(ResponseUtils.success({
-        usage: null,
-        message: 'No active subscription found'
-      }));
-    }
-
-    const { subscription, plan, usage } = subscriptionData[0]!;
+    // Use the new service to get usage statistics
+    const usage = await usageTracker.getUserUsage(user.id);
 
     if (!usage) {
       return res.json(ResponseUtils.success({
-        usage: {
-          planName: plan.name,
-          validationsUsed: 0,
-          validationsLimit: plan.validationsPerMonth,
-          apiCallsUsed: 0,
-          apiCallsLimit: plan.apiAccess ? -1 : 0,
-          utilizationPercentage: '0.00',
-          daysRemaining: Math.ceil((new Date(subscription.currentPeriodEnd || '').getTime() - Date.now()) / (24 * 60 * 60 * 1000))
-        }
+        usage: null,
+        message: 'No active subscription or usage quota found'
       }));
     }
 
-    const utilizationPercentage = (usage.validationsLimit && usage.validationsLimit > 0) 
-      ? (((usage.validationsUsed || 0) / usage.validationsLimit) * 100).toFixed(2)
-      : '0.00';
-
-    const daysRemaining = Math.max(0, Math.ceil(
-      (new Date(usage.currentPeriodEnd || '').getTime() - Date.now()) / (24 * 60 * 60 * 1000)
-    ));
-
     return res.json(ResponseUtils.success({
-      usage: {
-        planName: plan.name,
-        validationsUsed: usage.validationsUsed || 0,
-        validationsLimit: usage.validationsLimit,
-        apiCallsUsed: usage.apiCallsUsed,
-        apiCallsLimit: usage.apiCallsLimit,
-        utilizationPercentage,
-        daysRemaining,
-        currentPeriodStart: usage.currentPeriodStart,
-        currentPeriodEnd: usage.currentPeriodEnd,
-        lastResetAt: usage.lastResetAt
-      }
+      usage
     }));
   } catch (error) {
     console.error('Usage fetch error:', error);
