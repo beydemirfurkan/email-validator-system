@@ -1,0 +1,2 @@
+- Sistemin tamamen testleri yapılmalı. SMTP kontrolü test edilmeli.
+- Büyük listeler ile çalışabilmeli

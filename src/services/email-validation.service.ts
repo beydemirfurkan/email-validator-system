@@ -7,9 +7,13 @@ import disposableDomains from 'disposable-email-domains';
 import { MxCache, CacheStatistics } from './mx-cache.service';
 import { upstashCache } from './upstash-cache.service';
 import { ValidationResult } from '../types/api';
+import { SMTPVerificationService } from './smtp/smtp-verification.service';
+import { initializeConnectionPool } from './smtp/connection-pool.service';
+import { appConfig } from '../config/app-config';
 
 interface ValidationConfig {
   batchSize: number;
+  enableSmtpValidation?: boolean;
 }
 
 interface InvalidPatterns {
@@ -33,13 +37,19 @@ interface TypoCheckResult {
 
 export class EmailValidationService {
   private readonly batchSize: number;
+  private readonly enableSmtpValidation: boolean;
   private readonly invalidPatterns: InvalidPatterns;
   private readonly disposableDomains: Set<string>;
   private readonly mxCache: MxCache;
   private readonly statistics: Statistics;
+  private readonly smtpVerificationService: SMTPVerificationService;
 
-  constructor(config: ValidationConfig = { batchSize: 10 }) {
+  constructor(config: ValidationConfig = { 
+    batchSize: appConfig.validation.batchSize, 
+    enableSmtpValidation: appConfig.validation.enableSmtpValidation 
+  }) {
     this.batchSize = config.batchSize;
+    this.enableSmtpValidation = config.enableSmtpValidation || false;
     this.invalidPatterns = this.initializeInvalidPatterns();
     this.disposableDomains = new Set(disposableDomains);
     this.mxCache = new MxCache();
@@ -50,6 +60,19 @@ export class EmailValidationService {
       totalInvalid: 0,
       reasons: new Map()
     };
+
+    // Initialize SMTP verification service
+    this.smtpVerificationService = new SMTPVerificationService();
+    
+    // Initialize connection pool if SMTP validation is enabled
+    if (this.enableSmtpValidation) {
+      initializeConnectionPool({
+        maxConnectionsPerPool: appConfig.smtp.maxConnectionsPerPool,
+        connectionTimeout: appConfig.smtp.connectTimeout,
+        maxIdleTime: appConfig.smtp.maxIdleTime,
+        enablePooling: appConfig.smtp.enableConnectionPooling
+      });
+    }
   }
 
   private initializeInvalidPatterns(): InvalidPatterns {
@@ -558,12 +581,59 @@ export class EmailValidationService {
       }
 
       const hasMXRecord = await this.checkMXRecord(domain);
+      
+      if (!hasMXRecord) {
+        return {
+          valid: false,
+          email: cleanEmail,
+          score: 30,
+          reason: ['No MX record found'],
+          details: {
+            format: true,
+            mx: false,
+            disposable: true,
+            role: true,
+            typo: true,
+            suspicious: true,
+            spamKeywords: true,
+            smtp: false
+          },
+          fromCache: false,
+          processingTime: performance.now() - startTime
+        };
+      }
+
+      // SMTP validation if enabled
+      let smtpValid = true;
+      let smtpReason: string[] = [];
+      let smtpScore = 100;
+      let smtpDetails: any = null;
+
+      if (this.enableSmtpValidation) {
+        try {
+          const smtpResult = await this.smtpVerificationService.verifyEmail(cleanEmail, {
+            verbose: appConfig.smtp.verbose
+          });
+
+          smtpValid = smtpResult.valid;
+          if (!smtpValid) {
+            smtpReason.push(smtpResult.reason);
+            smtpScore = 60; // Lower score for SMTP failure
+          }
+          smtpDetails = smtpResult.smtpDetails;
+        } catch (error: any) {
+          // SMTP verification failed, but don't fail the entire validation
+          console.warn(`SMTP verification failed for ${cleanEmail}:`, error.message);
+          smtpReason.push('SMTP verification unavailable');
+          smtpScore = 80; // Reduced score but still considered valid
+        }
+      }
 
       const result = {
-        valid: hasMXRecord,
+        valid: smtpValid,
         email: cleanEmail,
-        score: hasMXRecord ? 100 : 30,
-        reason: hasMXRecord ? [] : ['No MX record found'],
+        score: smtpScore,
+        reason: smtpReason,
         details: {
           format: true,
           mx: hasMXRecord,
@@ -571,10 +641,12 @@ export class EmailValidationService {
           role: true,
           typo: true,
           suspicious: true,
-          spamKeywords: true
+          spamKeywords: true,
+          smtp: this.enableSmtpValidation ? smtpValid : true
         },
         fromCache: false,
-        processingTime: performance.now() - startTime
+        processingTime: performance.now() - startTime,
+        ...(smtpDetails && { smtpDetails })
       };
 
       // 4. Cache successful validations (24 hours)

@@ -6,7 +6,30 @@ export const appConfig = {
   },
   
   validation: {
-    batchSize: 10
+    batchSize: 10,
+    enableSmtpValidation: process.env.ENABLE_SMTP_VALIDATION === 'true'
+  },
+
+  smtp: {
+    // HELO domains pool - rotated for better deliverability
+    heloDomains: (process.env.SMTP_HELO_DOMAINS || 'mail.example.com,smtp.example.com,relay.example.com').split(','),
+    
+    // FROM addresses pool - rotated to avoid rate limiting
+    fromAddresses: (process.env.SMTP_FROM_ADDRESSES || 'verify@example.com,test@example.com,check@example.com').split(','),
+    
+    // Connection settings
+    connectTimeout: parseInt(process.env.SMTP_CONNECT_TIMEOUT || '15000'),
+    readTimeout: parseInt(process.env.SMTP_READ_TIMEOUT || '15000'),
+    maxRetries: parseInt(process.env.SMTP_MAX_RETRIES || '2'),
+    
+    // Connection pooling
+    maxConnectionsPerPool: parseInt(process.env.SMTP_MAX_CONNECTIONS_PER_POOL || '3'),
+    maxIdleTime: parseInt(process.env.SMTP_MAX_IDLE_TIME || '60000'),
+    
+    // Behavior settings
+    enableConnectionPooling: process.env.SMTP_ENABLE_POOLING !== 'false',
+    starttls: (process.env.SMTP_STARTTLS || 'auto') as 'on' | 'off' | 'auto',
+    verbose: process.env.SMTP_VERBOSE === 'true'
   },
   
   upload: {
